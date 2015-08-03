@@ -3,47 +3,74 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Music Box' });
 });
 
-/* GET Hello World page. */
-router.get('/helloworld', function(req, res) {
-	res.render('helloworld', { title: 'Hello, World!' })
-});
-
-/* GET Userlist page. */
-router.get('/userlist', function(req, res) {
+/* GET library page. */
+router.get('/library', function(req, res) {
     var db = req.db;
-    var collection = db.get('usercollection');
-    collection.find({},{},function(e,docs){
-        res.render('userlist', {
-            "userlist" : docs
-        });
+    var collection = db.get('musiccollection');
+    collection.find({}, {}, function(e,docs){
+        res.render('library', {
+            "library" : docs
+        });             
     });
 });
 
-/* GET New User page. */
-router.get('/newuser', function(req, res) {
-    res.render('newuser', { title: 'Add New User' });
+// Get findsong page
+router.get("/findsongs", function(req, res){
+    res.render("findsongs", {title: "Search for music"});
 });
 
-/* POST to Add User Service */
-router.post('/adduser', function(req, res) {
+router.post("/searchresult", function(req, res){
+    var db = req.db;
+    var searchSong = req.body.songname;
+    var searchArtist = req.body.artistname;
+    var collection = db.get('musiccollection');
+    // query the collection for the search terms and return results
+    // var foundSoungs = collection.find({},{}, function(e,docs){ /render page with supplied results/});
+    res.render("searchresult", {searchterms: searchSong + " - " + searchArtist});
+});
 
+router.get("/delete", function(req, res){
+   var db = req.db;
+   var collection = db.get('musiccollection');
+   res.render("'delete");
+});
+
+router.get("/edit", function(req, res){
+    //get song id
+    //display database entry
+    //display empty field
+    //
+    
+});
+router.post("/updated", function(req, res){
+    //fetch collection and form info
+    //go through each field and if it is not empty write it to db
+    //if no error redirect to library
+})
+
+
+/* GET New Song & Post to Library page. */
+router.get('/newsong', function(req, res) {
+    res.render('newsong', { title: 'Add New Song' });
+});
+
+router.post('/addsong', function(req, res) {
     // Set our internal DB variable
     var db = req.db;
-
+    var collection = db.get('musiccollection');
     // Get our form values. These rely on the "name" attributes
-    var userName = req.body.username;
-    var userEmail = req.body.useremail;
-
-    // Set our collection
-    var collection = db.get('usercollection');
+    var songName = req.body.songname;
+    var artistName = req.body.artistname;
+    var songUrl = req.body.songurl;
 
     // Submit to the DB
     collection.insert({
-        "username" : userName,
-        "email" : userEmail
+        "songtitle" : songName,
+        "artist" : artistName,
+        "url" : songUrl
     }, function (err, doc) {
         if (err) {
             // If it failed, return error
@@ -53,7 +80,7 @@ router.post('/adduser', function(req, res) {
             // If it worked, set the header so the address bar doesn't still say /adduser
             //res.location("userlist");
             // And forward to success page
-            res.redirect("userlist");
+            res.redirect("library");
         }
     });
 });

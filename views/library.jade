@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1. 
+        Song List
+    ul 
+        each song, i in library
+            li(name=song._id)=song.songtitle+" - "+song.artist + " - " + song.url
+                =" "
+                a(href="/edit")="edit"
+                ="  "
+                a(href="/delete")="delete"
+                
+    div
+        ul
+            li 
+                a(href="/")="Home" 
+            li
+                a(href="/newsong")= "Add Track"

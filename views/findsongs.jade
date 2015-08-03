@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1= title
+    form#formFindSong(name="findsong",method="post",action="/searchresult")
+        input#inputSongName(type="text", placeholder="song name", name="songname")
+        input#inputAristName(type="text", placeholder="artist name", name="artistname")
+        button#btnSubmit(type="submit") submit

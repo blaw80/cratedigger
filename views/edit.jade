@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1= title
+    form#formAddSong(name="addsong",method="post",action="/updated")
+        input#inputSongName(type="text", placeholder=song, name="songname")
+        input#inputAristName(type="text", placeholder=artist, name="artistname")
+        input#inputUrl(type="text", placeholder=url, name="songurl")
+        button#btnSubmit(type="submit") submit
+    div
+        ul
+            li 
+                a(href="/")="Home"
+            
