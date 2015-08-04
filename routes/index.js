@@ -32,10 +32,21 @@ router.post("/searchresult", function(req, res){
     res.render("searchresult", {searchterms: searchSong + " - " + searchArtist});
 });
 
-router.get("/delete", function(req, res){
+router.get("/delete/:id", function(req, res){
    var db = req.db;
    var collection = db.get('musiccollection');
-   res.render("'delete");
+   var songId = req.params.id;
+
+//   remove({}, fn)
+    collection.remove({"_id": songId}, function(e){
+        if (e) {res.send("There was a problem deleting from the database.");}
+     //   else {res.send("delete confirmed");}        
+        collection.find({}, {}, function(e,docs){
+            res.render('library', {
+            "library" : docs
+        });             
+        });
+    });
 });
 
 router.get("/edit/:id", function(req, res){
@@ -52,7 +63,6 @@ router.get("/edit/:id", function(req, res){
 
         res.render("edit", {title: "edit track details", song:songName, artist:artistName, url:songUrl, id: songId});
     });
-// on form submit route to "/updated/" & redir to "/library"
 });
 
 router.post("/updated/:id", function(req, res){
