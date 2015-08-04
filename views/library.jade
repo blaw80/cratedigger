@@ -5,11 +5,16 @@ block content
         Song List
     ul 
         each song, i in library
-            li(name=song._id)=song.songtitle+" - "+song.artist + " - " + song.url
-                =" "
-                a(href="/edit")="edit"
-                ="  "
-                a(href="/delete")="delete"
+            li=song.songtitle
+                ul
+                    li=song.artist
+                    li=song.url
+                    li=song._id
+                    li
+                        a(href="/edit/"+song._id)="edit"
+                        ="  "
+                        a(href="/delete")="delete"
+            br
                 
     div
         ul

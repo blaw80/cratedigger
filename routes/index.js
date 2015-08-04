@@ -24,9 +24,9 @@ router.get("/findsongs", function(req, res){
 
 router.post("/searchresult", function(req, res){
     var db = req.db;
+    var collection = db.get('musiccollection');
     var searchSong = req.body.songname;
     var searchArtist = req.body.artistname;
-    var collection = db.get('musiccollection');
     // query the collection for the search terms and return results
     // var foundSoungs = collection.find({},{}, function(e,docs){ /render page with supplied results/});
     res.render("searchresult", {searchterms: searchSong + " - " + searchArtist});
@@ -38,19 +38,37 @@ router.get("/delete", function(req, res){
    res.render("'delete");
 });
 
-router.get("/edit", function(req, res){
-    //get song id
-    //display database entry
-    //display empty field
-    //
-    
-});
-router.post("/updated", function(req, res){
-    //fetch collection and form info
-    //go through each field and if it is not empty write it to db
-    //if no error redirect to library
-})
+router.get("/edit/:id", function(req, res){
+    var db = req.db;
+    var collection = db.get('musiccollection');
+// get _id value from req url parameter
+    var songId = req.params.id;
 
+// use findOne to select from database with songId
+    collection.findOne({"_id": songId}, function(e, docs){
+        var songName = docs.songtitle;
+        var artistName = docs.artist;
+        var songUrl = docs.url;
+
+        res.render("edit", {title: "edit track details", song:songName, artist:artistName, url:songUrl, id: songId});
+    });
+// on form submit route to "/updated/" & redir to "/library"
+});
+
+router.post("/updated/:id", function(req, res){
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    var songId = req.params.id;
+    var songName = req.body.songname;
+    var artistName = req.body.artistname;
+    var songUrl = req.body.songurl;
+
+// update docs with songId
+        collection.update({_id: songId},{$set: {url: songUrl}},function (err, doc) {
+        if (err) {res.send("There was a problem adding the information to the database.");}
+        else {res.redirect("/library");}
+        });
+});
 
 /* GET New Song & Post to Library page. */
 router.get('/newsong', function(req, res) {
@@ -77,8 +95,8 @@ router.post('/addsong', function(req, res) {
             res.send("There was a problem adding the information to the database.");
         }
         else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
-            //res.location("userlist");
+            // on success set the address bar to library
+            //res.location("successLibrary");
             // And forward to success page
             res.redirect("library");
         }

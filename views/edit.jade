@@ -2,13 +2,16 @@ extends layout
 
 block content
     h1= title
-    form#formAddSong(name="addsong",method="post",action="/updated")
-        input#inputSongName(type="text", placeholder=song, name="songname")
-        input#inputAristName(type="text", placeholder=artist, name="artistname")
-        input#inputUrl(type="text", placeholder=url, name="songurl")
-        button#btnSubmit(type="submit") submit
+    h2="song id: "+id
+    form#formEditSong(name="editSong",method="post",action="/updated/"+id)
+        input#inputSongName(type="text", value=song, name="songname")
+        input#inputAristName(type="text", value=artist, name="artistname")
+        input#inputUrl(type="text", value=url, name="songurl")
+        button#btnSubmit(type="submit") save changes
     div
         ul
             li 
                 a(href="/")="Home"
+                =" "
+                a(href="/library")="Library"
             
