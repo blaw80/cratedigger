@@ -7,11 +7,11 @@ router.get('/', function(req, res) {
 });
 
 /* GET library page. */
-router.get('/library', function(req, res) {
+router.get('/admin', function(req, res) {
     var db = req.db;
     var collection = db.get('musiccollection');
     collection.find({}, {}, function(e,docs){
-        res.render('library', {
+        res.render('admin', {
             "library" : docs
         });             
     });
@@ -37,12 +37,12 @@ router.get("/delete/:id", function(req, res){
    var collection = db.get('musiccollection');
    var songId = req.params.id;
 
-//   remove({}, fn)
+//   delete from database with this function: remove({}, fn)
     collection.remove({"_id": songId}, function(e){
         if (e) {res.send("There was a problem deleting from the database.");}
      //   else {res.send("delete confirmed");}        
         collection.find({}, {}, function(e,docs){
-            res.render('library', {
+            res.render('admin', {
             "library" : docs
         });             
         });
@@ -76,7 +76,7 @@ router.post("/updated/:id", function(req, res){
 // update docs with songId
         collection.update({_id: songId},{$set: {url: songUrl}},function (err, doc) {
         if (err) {res.send("There was a problem adding the information to the database.");}
-        else {res.redirect("/library");}
+        else {res.redirect("/admin");}
         });
 });
 
@@ -108,7 +108,7 @@ router.post('/addsong', function(req, res) {
             // on success set the address bar to library
             //res.location("successLibrary");
             // And forward to success page
-            res.redirect("library");
+            res.redirect("admin");
         }
     });
 });
