@@ -6,17 +6,6 @@ router.get('/', function(req, res) {
     res.render('index', { title: 'Music Box' });
 });
 
-/* GET library page. */
-router.get('/admin', function(req, res) {
-    var db = req.db;
-    var collection = db.get('musiccollection');
-    collection.find({}, {}, function(e,docs){
-        res.render('admin', {
-            "library" : docs
-        });             
-    });
-});
-
 // Get findsong page
 router.get("/findsongs", function(req, res){
     res.render("findsongs", {title: "Search for music"});

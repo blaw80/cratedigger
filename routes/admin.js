@@ -1,13 +1,35 @@
 var express = require('express');
 var router = express.Router();
 
-//routes here should all be /admin/something
 
-
-/* GET users listing. 
 router.get('/', function(req, res) {
-    res.send('respond with a resource');
-    console.log('sdfghjk');
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    collection.find({}, {}, function(e,docs){
+        res.render('admin', {
+            "library" : docs
+        });             
+    });
+});
+
+router.get('/tracklist', function(req, res) {
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    collection.find({},{},function(e,docs){
+        res.json(docs);
+    });
+});
+
+/* GET library page. /
+router.get('/admin', function(req, res) {
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    collection.find({}, {}, function(e,docs){
+        res.render('admin', {
+            "library" : docs
+        });             
+    });
 });
 */
+
 module.exports = router;
