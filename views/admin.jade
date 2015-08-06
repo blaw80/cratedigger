@@ -1,24 +1,30 @@
-extends layout
+extends adminlayout
 
 block content
-    h1. 
-        Song List
-    ul 
-        each song, i in library
-            li=song.songtitle
-                ul
-                    li=song.artist
-                    li=song.url
-                    li=song._id
-                    li
-                        a(href="/edit/"+song._id)="edit"
-                        ="  "
-                        a(href="/delete/"+song._id)="delete"
-            br
-                
-    div
-        ul
-            li 
-                a(href="/")="Home" 
-            li
-                a(href="/newsong")= "Add Track"
+    #container
+        h1. 
+            Song List
+        #primary
+            p this is the sidebar
+        #content
+        
+        
+            ul 
+            each song, i in library
+                li=song.songtitle
+                    ul
+                        li=song.artist
+                        li=song.url
+                        li=song._id
+                        li
+                            a(href="/edit/"+song._id)="edit"
+                            ="  "
+                            a(href="/delete/"+song._id)="delete"
+        #secondary
+            p and another sidebar
+        #footer
+            ul
+                li 
+                    a(href="/")="Home" 
+                li
+                    a(href="/newsong")= "Add Track"
