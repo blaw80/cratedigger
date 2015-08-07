@@ -19,17 +19,15 @@ router.get('/tracklist', function(req, res) {
         res.json(docs);
     });
 });
-
-/* GET library page. /
-router.get('/admin', function(req, res) {
+/*
+router.get('trackinfo/:id', function(req, res){
     var db = req.db;
     var collection = db.get('musiccollection');
-    collection.find({}, {}, function(e,docs){
-        res.render('admin', {
-            "library" : docs
-        });             
-    });
+    //find entry where _id === :id
+    // send json response
+    
 });
 */
+
 
 module.exports = router;
