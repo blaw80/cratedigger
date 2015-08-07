@@ -65,6 +65,10 @@ router.post("/updated/:id", function(req, res){
 // update docs with songId
         collection.update({_id: songId},{$set: {url: songUrl}},function (err, doc) {
         if (err) {res.send("There was a problem adding the information to the database.");}
+
+// *** IMPORTANT*** i never finished writing the lines here that would update songtitle, or artist
+// this function only works to update the url field
+
         else {res.redirect("/admin");}
         });
 });

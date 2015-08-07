@@ -5,20 +5,26 @@ block content
         h1. 
             Song List
         #primary
-            p this is the sidebar
+
+            #trackInfo
+                h2 Track Info
+                p
+                    strong Title:
+                    |  <span id='trackInfoName'></span>
+                    br
+                    strong Artist:
+                    |  <span id='trackInfoArtist'></span>
+                    br
+                    strong Url:
+                    |  <span id='trackInfoUrl'></span>
+                    br
+                    strong Id:
+                    |  <span id='trackInfoId'></span>
+                    br
+                    |  <span id='editTrack'></span>
+            #editTrackForm
+                p
         #content
-            ul 
-            each song, i in library
-                li=song.songtitle
-                    ul
-                        li=song.artist
-                        li=song.url
-                        li=song._id
-                        li
-                            a(href="/edit/"+song._id)="edit"
-                            ="  "
-                            a(href="/delete/"+song._id)="delete"
-        #secondary
             h2 Song List
             #songList
                table
@@ -27,6 +33,8 @@ block content
                         th Artist
                         th Info
                     tbody
+                    
+        #secondary
                     
         #footer
             ul

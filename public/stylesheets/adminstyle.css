@@ -33,6 +33,16 @@ h1 {text-align: center;}
 				padding:5px 10px;
 				text-align:center;
 			}
+			
+#trackInfo {
+	width:100%;
+	position:relative;
+}
+
+	#trackInfo p {
+		padding:5px;
+		border:1px solid black;
+	}
 
 #container {
     width: 960px;
