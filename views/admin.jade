@@ -21,9 +21,9 @@ block content
                     strong Id:
                     |  <span id='trackInfoId'></span>
                     br
-                    |  <span id='editTrack'></span>
+                    |  <span id='editTrack'></span><span id='deleteTrackBtn'></span>
             #editTrackForm
-                p
+                
         #content
             h2 Song List
             #songList
@@ -35,10 +35,3 @@ block content
                     tbody
                     
         #secondary
-                    
-        #footer
-            ul
-                li 
-                    a(href="/")="Home" 
-                li
-                    a(href="/newsong")= "Add Track"

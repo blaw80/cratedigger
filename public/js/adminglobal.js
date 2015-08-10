@@ -7,6 +7,8 @@
     //click listeners for info & edit button
         $('#songList table tbody').on('click', 'td a.infobutton', showTrack);
         $('#trackInfo p').on('click', 'a.editbutton', editTrack);
+        $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
+        $('#editTrackForm').on('click', 'button', displayUpdated);
     
     });
 
@@ -42,29 +44,60 @@
             $('#trackInfoUrl').text(thisTrackObject.url);
             $('#trackInfoId').text(thisTrackObject._id);
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Track Details</a>');
+            $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel"'+thisTrackObject._id + '">Delete Track</a>');
+            $( '#editTrackForm' ).empty();
         }    
     
         function editTrack(event){
             event.preventDefault();
             
-            //grab _id value from link rel
             var thisTrackId = $(this).attr('rel');  
             
             // this time instead of fetching track details from our cached array, we will query the db 
             // call /trackinfo/:id route on admin.js
             $.getJSON("/admin/trackinfo/"+thisTrackId, function(data){
                 // use jquery to replace #trackInfo div with a form
-                // $("data to be inserted").replaceAll("#targetelement");
-                var trackName = data.songtitle;
-                $("<p>"+data.songtitle+"</p>").replaceAll("#editTrackForm p");
-                // action = <router to update track info in db>
-                // inputs for songtitle, artist, & url
-                // button type=submit for save changes ... btn id?
+
+                var editFormString = '<form id="formEditSongFields" name="editSong" method="post" action="admin/edited/'+ data._id + '">'+
+                '<input id="editSongTitle" type="text" name="songname" value="' + data.songtitle +'">' + 
+                '<input id="editArtist" type="text" name="artistname" value="' +data.artist +'">' +
+                '<input id="editUrl" type="text" name="songurl" value="' + data.url +'">'+
+                '<button id="btnSubmit" type="submit" data-id="'+data._id+'">save changes</button></form>';
                 
-                //alert("this track is" + data.songtitle);
+                $('#editTrackForm').html(editFormString);            
+
             });            
-            
         }
+        
+        function displayUpdated(event){
+            event.preventDefault();
+            var editedTrackInfo = { 'songtitle': $('#editTrackForm input#editSongTitle').val(),
+                                'artist': $('#editTrackForm input#editArtist').val(),
+                                'url': $('#editTrackForm input#editUrl').val() };
+            var songId = $('#editTrackForm button').attr('data-id');
+            
+            //post JSON data to collection & then run populateTable() to show updated info
+            $.ajax({
+                type: 'POST',
+                data: editedTrackInfo,
+                url: '/admin/updated/'+songId,
+                dataType: 'JSON'
+            }).done(function(response){
+                
+              if (response.msg === '')  {
+                  $('#trackInfoName').text(editedTrackInfo.songtitle);
+                  $('#trackInfoArtist').text(editedTrackInfo.artist);
+                  $('#trackInfoUrl').text(editedTrackInfo.url);
+                  $('#editTrackForm').empty();
+                  populateTable();
+              }
+            });
+        }
+        
+        function deleteTrack(){
+            alert("are you sure?");
+        }
+        
     
 }());
 

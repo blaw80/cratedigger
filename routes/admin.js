@@ -34,5 +34,22 @@ router.get('/trackinfo/:id', function(req, res){
     });
 });
 
+router.post('/updated/:id', function(req, res) {
+    var db = req.db;
+    var collection = db.get('musiccollection');
+
+    collection.update({ '_id': req.params.id },{ $set: {songtitle: req.body.songtitle, artist: req.body.artist, url: req.body.url} }, function(err){
+        res.send(
+            (err === null) ? {msg: ''} : {msg: err}
+            );
+    });
+    
+    
+    
+// console.log(req.body.songtitle);
+ // res.send("edits submitted");
+  // respond with success? or respond with updated JSON?    
+    
+});
 
 module.exports = router;
