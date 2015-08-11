@@ -6,11 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
-// changed path of mongo driver
+//  path for mongo driver
 var dbPath = "mongodb://"+process.env.IP+":27017/musicdb";
 var db = monk(dbPath);
-
-//    console.log("nothing here? " );
 
 var routes = require('./routes/index');
 var admin = require('./routes/admin');

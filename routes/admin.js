@@ -27,6 +27,7 @@ router.get('/trackinfo/:id', function(req, res){
     });
 });
 
+// router for accepting data from edit form and writing to db
 router.put('/updated/:id', function(req, res) {
     var db = req.db;
     var collection = db.get('musiccollection');
@@ -55,5 +56,22 @@ router.post('/addtrack', function(req, res){
         res.send((err===null) ? {msg: ''} : {msg: err});        
     });
 });
+
+/* add in router for search function
+
+router.get("/findsongs", function(req, res){
+    res.render("findsongs", {title: "Search for music"});
+});
+
+router.post("/searchresult", function(req, res){
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    var searchSong = req.body.songname;
+    var searchArtist = req.body.artistname;
+    // query the collection for the search terms and return results
+    // var foundSoungs = collection.find({},{}, function(e,docs){ /render page with supplied results/});
+    res.render("searchresult", {searchterms: searchSong + " - " + searchArtist});
+});
+*/
 
 module.exports = router;
