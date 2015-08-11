@@ -8,8 +8,11 @@
         $('#songList table tbody').on('click', 'td a.infobutton', showTrack);
         $('#trackInfo p').on('click', 'a.editbutton', editTrack);
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
-        $('#editTrackForm').on('click', 'button', displayUpdated);
-    
+        $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
+        $('#editTrackForm').on('click', 'button#cancelEdit', cancelEdit);
+        $('#addTrack').on('click', addTrack);
+        $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
+        $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
     });
 
         function populateTable() {
@@ -61,24 +64,32 @@
                 var editFormString = '<form id="formEditSongFields" name="editSong">'+
                 '<input id="editSongTitle" type="text" name="songname" value="' + data.songtitle +'">' + 
                 '<input id="editArtist" type="text" name="artistname" value="' +data.artist +'">' +
-                '<input id="editUrl" type="text" name="songurl" value="' + data.url +'">'+
-                '<button id="btnSubmit" type="submit" data-id="'+data._id+'">save changes</button></form>';
-                
-                $('#editTrackForm').html(editFormString);            
+                '<input id="editUrl" type="text" name="songurl" value="' + data.url +'">' +
+                '<button id="submitEdit" type="button" data-id="'+data._id+'">save changes</button><button type="button" id="cancelEdit">cancel</button></form>';
 
+                $('#editTrackForm').html(editFormString);            
             });            
         }
+        
+        function cancelEdit(event){
+            event.preventDefault();
+            $('#editTrackForm').empty();
+        }
+        function cancelAdd(event){
+            event.preventDefault();
+            $('#editTrackForm').empty();
+        }    
         
         function displayUpdated(event){
             event.preventDefault();
             var editedTrackInfo = { 'songtitle': $('#editTrackForm input#editSongTitle').val(),
                                 'artist': $('#editTrackForm input#editArtist').val(),
                                 'url': $('#editTrackForm input#editUrl').val() };
-            var songId = $('#editTrackForm button').attr('data-id');
+            var songId = $('#editTrackForm button#submitEdit').attr('data-id');
             
             //post JSON data to collection & then run populateTable() to show updated info
             $.ajax({
-                type: 'POST',
+                type: 'PUT',
                 data: editedTrackInfo,
                 url: '/admin/updated/'+songId,
                 dataType: 'JSON'
@@ -112,6 +123,36 @@
             }
             else {return false}
             }
-    
+
+        function addTrack(event){
+            event.preventDefault();
+            $('#editTrackForm').empty();
+            var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
+                '<input id="addSongTitle" type="text" name="songname" placeholder="song title">' + 
+                '<input id="addArtist" type="text" name="artistname" placeholder="artist">' +
+                '<input id="addUrl" type="text" name="songurl" placeholder="url">' +
+                '<button id="submitNewTrack" type="button">save changes</button><button type="button" id="cancelAdd">cancel</button></form>';
+            $('#editTrackForm').html(addTrackString);
+        }
+        
+        function writeNewTrack(event){
+            event.preventDefault();
+            var newTrackInfo = {'songtitle': $('#addSongTitle').val(),
+                                'artist': $('#addArtist').val(),
+                                'url': $('#addUrl').val()};
+            $.ajax({
+                type: 'POST',
+                url: '/admin/addtrack',
+                dataType: 'JSON',
+                data: newTrackInfo
+            }).done(function(response){
+                if (response.msg ===''){
+                    populateTable();
+                    $('#editTrackForm').empty();
+                }
+                    else {alert('error: '+ response.msg);}
+            });
+        }
+        
 }());
 

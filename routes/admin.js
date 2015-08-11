@@ -27,7 +27,7 @@ router.get('/trackinfo/:id', function(req, res){
     });
 });
 
-router.post('/updated/:id', function(req, res) {
+router.put('/updated/:id', function(req, res) {
     var db = req.db;
     var collection = db.get('musiccollection');
 
@@ -36,7 +36,6 @@ router.post('/updated/:id', function(req, res) {
             (err === null) ? {msg: ''} : {msg: err}
             );
     });
-   
 });
 
 router.delete('/deletetrack/:id', function(req, res){
@@ -46,6 +45,15 @@ router.delete('/deletetrack/:id', function(req, res){
    collection.remove({'_id': req.params.id}, function(err){
        res.send((err===null) ? {msg: ''} : {msg: 'error: '+err});
    });
+});
+
+router.post('/addtrack', function(req, res){
+    var db = req.db;
+    var collection = db.get('musiccollection');
+    
+    collection.insert(req.body, function(err, result){
+        res.send((err===null) ? {msg: ''} : {msg: err});        
+    });
 });
 
 module.exports = router;
