@@ -44,7 +44,7 @@
             $('#trackInfoUrl').text(thisTrackObject.url);
             $('#trackInfoId').text(thisTrackObject._id);
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Track Details</a>');
-            $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel"'+thisTrackObject._id + '">Delete Track</a>');
+            $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel="'+thisTrackObject._id + '">Delete Track</a>');
             $( '#editTrackForm' ).empty();
         }    
     
@@ -58,7 +58,7 @@
             $.getJSON("/admin/trackinfo/"+thisTrackId, function(data){
                 // use jquery to replace #trackInfo div with a form
 
-                var editFormString = '<form id="formEditSongFields" name="editSong" method="post" action="admin/edited/'+ data._id + '">'+
+                var editFormString = '<form id="formEditSongFields" name="editSong">'+
                 '<input id="editSongTitle" type="text" name="songname" value="' + data.songtitle +'">' + 
                 '<input id="editArtist" type="text" name="artistname" value="' +data.artist +'">' +
                 '<input id="editUrl" type="text" name="songurl" value="' + data.url +'">'+
@@ -91,13 +91,27 @@
                   $('#editTrackForm').empty();
                   populateTable();
               }
+              else {alert('error'+ response.msg);}
             });
         }
         
-        function deleteTrack(){
-            alert("are you sure?");
-        }
-        
+        function deleteTrack(event){
+            event.preventDefault();
+            var confirmation = confirm("are you sure you want to delete this track?");
+            var thisTrackId = $('#trackInfoId').text();
+
+            if (confirmation === true){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/admin/deletetrack/'+ thisTrackId
+                }).done(function(response){
+                    if (response.msg ===''){}
+                    else {alert('error: '+ response.msg);}
+                    populateTable();
+                });
+            }
+            else {return false}
+            }
     
 }());
 
