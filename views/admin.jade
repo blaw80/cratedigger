@@ -33,6 +33,11 @@ block content
                         th Track
                         th Artist
                         th Info
+                        th Play
                     tbody
                     
         #secondary
+            audio(id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg")
+                source(id="audiosource" type="audio/mp3" src="http://www.archive.org/download/bolero_69/Bolero.mp3")
+            #playlist    
+                ul
