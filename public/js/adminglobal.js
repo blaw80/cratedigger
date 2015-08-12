@@ -6,6 +6,7 @@
         populateTable();
     //click listeners for info & edit button
         $('#songList table tbody').on('click', 'td a.infobutton', showTrack);
+        $('#songList table tbody').on('click', 'td a.addtoplaylist', addToPlaylist);
         $('#trackInfo p').on('click', 'a.editbutton', editTrack);
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
         $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
@@ -25,7 +26,9 @@
                 tableContent += '<tr>';
                 tableContent += '<td>'+this.songtitle + '</td>';
                 tableContent += '<td>' + this.artist + '</td>';
-                tableContent += '<td><a href="#" class="infobutton" rel="' + this._id + '">info</a></td>';
+                tableContent += '<td><a href="#" class="infobutton" rel="' + this._id + '">info</a></td>'
+                tableContent += '<td><a href="#" class="addtoplaylist" rel="' + this._id + '">+</a></td>'
+                ;
                 tableContent += '</tr>';
             });
         // Inject the whole content string into our existing HTML table
@@ -152,6 +155,25 @@
                 }
                     else {alert('error: '+ response.msg);}
             });
+        }
+        
+        function addToPlaylist(event){
+            event.preventDefault();
+            
+            // get id from link rel
+            var thisTrackId = $(this).attr('rel');
+            
+            var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
+            var thisTrackObject = trackData[arrayPosition];
+            
+            var audio = $("#audio");      
+            $("#audiosource").attr("src", thisTrackObject.url);
+            /****************/
+            audio[0].pause();
+            audio[0].load();//suspends and restores all audio element
+            audio[0].play();
+            /****************/
+            $('#playlist ul').prepend("<li>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
         }
         
 }());
