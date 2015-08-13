@@ -14,6 +14,17 @@
         $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
+        $('#playlist').on({
+            mouseenter: function () {
+            //stuff to do on mouse enter
+            $(this).addClass('highlightedplaylisttrack');
+            },
+            mouseleave: function () {
+        //stuff to do on mouse leave
+        $(this).removeClass('highlightedplaylisttrack');
+            }
+        }, ".playlist-item");
+
     });
 
         function populateTable() {
@@ -173,7 +184,7 @@
             audio[0].load();//suspends and restores all audio element
             audio[0].play();
             /****************/
-            $('#playlist ul').prepend("<li>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+            $('#playlist ul').append("<li class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
         }
         
 }());
