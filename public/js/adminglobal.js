@@ -14,17 +14,20 @@
         $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
+       //highlight track on hover in playlist
         $('#playlist').on({
             mouseenter: function () {
-            //stuff to do on mouse enter
             $(this).addClass('highlightedplaylisttrack');
             },
             mouseleave: function () {
-        //stuff to do on mouse leave
-        $(this).removeClass('highlightedplaylisttrack');
-            }
-        }, ".playlist-item");
-
+            $(this).removeClass('highlightedplaylisttrack');}
+            }, ".playlist-item");
+        //select track on click in playlist
+        $('#playlist').on('click', 'li.playlist-item', function(){
+            $('#playlist li').removeClass('selected-playlisttrack');
+            $(this).addClass('selected-playlisttrack');});
+        
+        
     });
 
         function populateTable() {
@@ -37,9 +40,8 @@
                 tableContent += '<tr>';
                 tableContent += '<td>'+this.songtitle + '</td>';
                 tableContent += '<td>' + this.artist + '</td>';
-                tableContent += '<td><a href="#" class="infobutton" rel="' + this._id + '">info</a></td>'
-                tableContent += '<td><a href="#" class="addtoplaylist" rel="' + this._id + '">+</a></td>'
-                ;
+                tableContent += '<td><a href="#" class="infobutton" rel="' + this._id + '">info</a></td>';
+                tableContent += '<td><a href="#" class="addtoplaylist" rel="' + this._id + '">+</a></td>';
                 tableContent += '</tr>';
             });
         // Inject the whole content string into our existing HTML table
@@ -168,7 +170,8 @@
             });
         }
         
-        function addToPlaylist(event){
+        
+function addToPlaylist(event){
             event.preventDefault();
             
             // get id from link rel
@@ -176,7 +179,7 @@
             
             var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
             var thisTrackObject = trackData[arrayPosition];
-            
+            if ( ! $('#playlist li').length ){
             var audio = $("#audio");      
             $("#audiosource").attr("src", thisTrackObject.url);
             /****************/
@@ -184,8 +187,31 @@
             audio[0].load();//suspends and restores all audio element
             audio[0].play();
             /****************/
-            $('#playlist ul').append("<li class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
-        }
+            $('#playlist ul').append("<li class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+            } else { 
+                    $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+            }
+}
+
+$('#audio')[0].addEventListener('ended', function(){
+    var currentTrack = $(".currently-playing");
+    var nextTrack = currentTrack.next('.playlist-item');
+
+    nextTrack.addClass('currently-playing');
+    currentTrack.removeClass('currently-playing');
+    
+    $('#audiosource').attr('src', nextTrack.attr('data-url') );
+    $('#audio')[0].load();
+    $('#audio')[0].play();
+    
+//    if ( $('#playlist li').length)
+   // remove class "currently playing" and move it to next element in list 
+    
+});
+
+// write function for track ended event, load next track and move .currentyl-playing class
+
+// write functions for skip, rewind, skip to selected and remove buttons
         
 }());
 

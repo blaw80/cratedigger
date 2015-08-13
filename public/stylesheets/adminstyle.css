@@ -68,9 +68,19 @@ h1 {text-align: center;}
 	.highlightedplaylisttrack {
 		background-color: gray;
 	}
+	
+	.selected-playlisttrack{
+		background-color: white;
+		color: black;
+	}
+	
+	.currently-playing{
+		background-color: steelblue;
+		color:white;
+	}
 
 #container {
-    width: 960px;
+    width: 1025px;
     margin: 0 auto;
 }
 
@@ -89,7 +99,7 @@ h1 {text-align: center;}
 
 #secondary {
     float: left;
-    width: 240px;
+    width: 305px;
     background: darkslategray;
 }
 
