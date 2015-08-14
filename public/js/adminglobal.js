@@ -188,6 +188,7 @@ function addToPlaylist(event){
             mouseleave: function () {
             $(this).removeClass('highlightedplaylisttrack');}
             }, ".playlist-item");
+            
         //select track on click in playlist
         $('#playlist').on('click', 'li.playlist-item', function(){
             $('#playlist li').removeClass('selected-playlisttrack');
@@ -210,7 +211,7 @@ function addToPlaylist(event){
 
 // Handle error by silently moving to next track 
 //this needs some work, not sure how to handle errors effectively and some of this shit needs to me made into smaller functions
-
+// acually this error handler should be its own function!
             var source =$('#audiosource')[0];
             source.addEventListener('error', function(e){
                 if (e){
@@ -256,9 +257,34 @@ function addToPlaylist(event){
         nextTrack.addClass('currently-playing');
     });
     
-// write functions for skip, skip to selected and remove buttons
+//removes selected track from playlist
     $('#removeselected').on('click', function(){
         
+        //check and see if selected is also currently playing and handle that somehow?
+        // rn it just loops on the deleted track
+        var $selected = $('.selected-playlisttrack');
+        if ($selected.hasClass('currently-playing')) {
+        
+            // this is cut/paste str8 from the #ffaudio callback. now it REALLY needs to be its own function
+            var currentTrack = $('.currently-playing');
+            var nextTrack = currentTrack.next('.playlist-item');
+            $('#audiosource').attr('src', nextTrack.attr('data-url'));
+            $('#audio')[0].load();
+            $('#audio')[0].play();
+            currentTrack.removeClass('currently-playing');
+            nextTrack.addClass('currently-playing');
+        }
+        $selected.remove();
+    });
+
+    $('#skiptoselected').on('click', function(){
+        var $selected = $('.selected-playlisttrack');
+        var $currentTrack = $('.currently-playing');
+        $selected.addClass('currently-playing');
+        $currentTrack.removeClass('.currently-playing');
+        $('#audiosource').attr('src', $selected.attr('data-url'));
+        $('#audio')[0].load();
+        $('#audio')[0].play();
     });
 
 }());
