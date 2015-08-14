@@ -174,9 +174,9 @@ function addToPlaylist(event){
             audio[0].load();//suspends and restores all audio element
             audio[0].play();
             /****************/
-            $('#playlist ul').append("<li class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
             } else { 
-                    $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+                $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
             }
 }
 
@@ -207,7 +207,25 @@ function addToPlaylist(event){
             $('#audiosource').attr('src', nextTrack.attr('data-url') );
             $('#audio')[0].load();
             $('#audio')[0].play();
-            }
+
+// Handle error by silently moving to next track 
+//this needs some work, not sure how to handle errors effectively and some of this shit needs to me made into smaller functions
+
+            var source =$('#audiosource')[0];
+            source.addEventListener('error', function(e){
+                if (e){
+                    currentTrack = $(".currently-playing");
+                    nextTrack = currentTrack.next('.playlist-item');
+                    
+                    nextTrack.addClass('currently-playing');
+                    currentTrack.removeClass('currently-playing');
+                    
+                    $('#audiosource').attr('src', nextTrack.attr('data-url') );
+                    $('#audio')[0].load();
+                    $('#audio')[0].play();
+                    }    
+            });
+        }
     });
 
 // rewind track and if currentTime < 2 load previous track
