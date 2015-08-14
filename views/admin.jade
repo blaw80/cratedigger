@@ -39,10 +39,10 @@ block content
         #secondary
             audio(id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg")
                 source(id="audiosource" type="audio/mp3" src="")
-            button="=>"
-            button="<="
-            button remove selected
-            button skip to selection
+            button(type="button" id="rewindaudio")="<|"
+            button(type="button" id="ffaudio")="|>"
+            button(type="button" id="removeselected") remove selected
+            button(type="button" id="skiptoselected") skip to selection
             
             #playlist    
                 ul

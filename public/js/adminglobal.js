@@ -14,20 +14,7 @@
         $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
-       //highlight track on hover in playlist
-        $('#playlist').on({
-            mouseenter: function () {
-            $(this).addClass('highlightedplaylisttrack');
-            },
-            mouseleave: function () {
-            $(this).removeClass('highlightedplaylisttrack');}
-            }, ".playlist-item");
-        //select track on click in playlist
-        $('#playlist').on('click', 'li.playlist-item', function(){
-            $('#playlist li').removeClass('selected-playlisttrack');
-            $(this).addClass('selected-playlisttrack');});
-        
-        
+      
     });
 
         function populateTable() {
@@ -193,25 +180,68 @@ function addToPlaylist(event){
             }
 }
 
-$('#audio')[0].addEventListener('ended', function(){
-    var currentTrack = $(".currently-playing");
-    var nextTrack = currentTrack.next('.playlist-item');
+ //highlight track on hover in playlist
+        $('#playlist').on({
+            mouseenter: function () {
+            $(this).addClass('highlightedplaylisttrack');
+            },
+            mouseleave: function () {
+            $(this).removeClass('highlightedplaylisttrack');}
+            }, ".playlist-item");
+        //select track on click in playlist
+        $('#playlist').on('click', 'li.playlist-item', function(){
+            $('#playlist li').removeClass('selected-playlisttrack');
+            $(this).addClass('selected-playlisttrack');});
 
-    nextTrack.addClass('currently-playing');
-    currentTrack.removeClass('currently-playing');
-    
-    $('#audiosource').attr('src', nextTrack.attr('data-url') );
-    $('#audio')[0].load();
-    $('#audio')[0].play();
-    
-//    if ( $('#playlist li').length)
-   // remove class "currently playing" and move it to next element in list 
-    
-});
-
-// write function for track ended event, load next track and move .currentyl-playing class
-
-// write functions for skip, rewind, skip to selected and remove buttons
+// detect track ended event and load next track
+    $('#audio')[0].addEventListener('ended', function(){
+        var currentTrack = $(".currently-playing");
+        var nextTrack = currentTrack.next('.playlist-item');
         
+        if ( currentTrack.is(':last-child')){
+            return } 
+        else {
+            nextTrack.addClass('currently-playing');
+            currentTrack.removeClass('currently-playing');
+    
+            $('#audiosource').attr('src', nextTrack.attr('data-url') );
+            $('#audio')[0].load();
+            $('#audio')[0].play();
+            }
+    });
+
+// THIS DOESN"T WORK RIGHT ---- Won't load prevtrack into the audio source element might be bad conditional in the if statement
+    $('#rewindaudio').on('click', function(){
+        var currentTrack = $('.currently-playing');
+        var prevTrack = currentTrack.prev('.playlist-item');
+    
+        if ( ($('#audio')[0].currentTime < 2) && $('li').index(currentTrack) ){
+            
+            $('#audiosource').attr('src', prevTrack.attr('data-url'));
+            $('#audio')[0].load();
+            $('#audio')[0].play();
+            currentTrack.removeClass('currently-playing');
+            prevTrack.addClass('currently-playing');
+            
+        }else{
+       $('#audio')[0].currentTime = 0; 
+        }
+    });
+    
+    $('#ffaudio').on('click', function(){
+        var currentTrack = $('.currently-playing');
+        var nextTrack = currentTrack.next('.playlist-item');
+        $('#audiosource').attr('src', nextTrack.attr('data-url'));
+        $('#audio')[0].load();
+        $('#audio')[0].play();
+        currentTrack.removeClass('currently-playing');
+        nextTrack.addClass('currently-playing');
+    });
+    
+// write functions for skip, skip to selected and remove buttons
+    $('#removeselected').on('click', function(){
+        
+    });
+
 }());
 
