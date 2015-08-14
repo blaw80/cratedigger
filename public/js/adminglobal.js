@@ -210,7 +210,7 @@ function addToPlaylist(event){
             }
     });
 
-// THIS DOESN"T WORK RIGHT ---- Won't load prevtrack into the audio source element might be bad conditional in the if statement
+// rewind track and if currentTime < 2 load previous track
     $('#rewindaudio').on('click', function(){
         var currentTrack = $('.currently-playing');
         var prevTrack = currentTrack.prev('.playlist-item');
