@@ -47,7 +47,10 @@
             
             $('#trackInfoName').text(thisTrackObject.songtitle);
             $('#trackInfoArtist').text(thisTrackObject.artist);
-            $('#trackInfoUrl').text(thisTrackObject.url);
+            
+            //should really be using native js methods for dom manipulation like this one:
+            $('#trackInfoUrl').html('<textarea class="urlttextarea">'+thisTrackObject.url+'</textarea>');
+            
             $('#trackInfoId').text(thisTrackObject._id);
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Track Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel="'+thisTrackObject._id + '">Delete Track</a>');
@@ -156,7 +159,6 @@
                     else {alert('error: '+ response.msg);}
             });
         }
-        
         
 function addToPlaylist(event){
             event.preventDefault();

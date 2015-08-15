@@ -51,7 +51,12 @@ h1 {
 	#trackInfo p a {
 		padding:3px;
 	}
-	
+
+ 	.urlttextarea {
+ 		width:220px;
+ 		height: 35px;
+ 	}
+
 #playlist {
 	background-color: black;
 	color: white;
