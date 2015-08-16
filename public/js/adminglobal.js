@@ -160,7 +160,7 @@
             });
         }
         
-function addToPlaylist(event){
+    function addToPlaylist(event){
             event.preventDefault();
             
             // get id from link rel
@@ -171,11 +171,15 @@ function addToPlaylist(event){
             if ( ! $('#playlist li').length ){
             var audio = $("#audio");      
             $("#audiosource").attr("src", thisTrackObject.url);
-            /****************/
+
+// handler for song with 404? the problem now is if the playlist is empty the error event fires but
+//there is no next track to move on to --- could make it so if error fires on initial add,
+// current track  class is not applied and moved to the next, or could alert user that the link
+// for this track is dead
             audio[0].pause();
-            audio[0].load();//suspends and restores all audio element
+            audio[0].load();
             audio[0].play();
-            /****************/
+
             $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
             } else { 
                 $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
@@ -183,7 +187,7 @@ function addToPlaylist(event){
 }
 
  //highlight track on hover in playlist
-        $('#playlist').on({
+    $('#playlist').on({
             mouseenter: function () {
             $(this).addClass('highlightedplaylisttrack');
             },
@@ -191,41 +195,29 @@ function addToPlaylist(event){
             $(this).removeClass('highlightedplaylisttrack');}
             }, ".playlist-item");
             
-        //select track on click in playlist
-        $('#playlist').on('click', 'li.playlist-item', function(){
+//select track on click in playlist
+    $('#playlist').on('click', 'li.playlist-item', function(){
             $('#playlist li').removeClass('selected-playlisttrack');
             $(this).addClass('selected-playlisttrack');});
 
 // detect track ended event and load next track
     $('#audio')[0].addEventListener('ended', function(){
-        var currentTrack = $(".currently-playing");
-        var nextTrack = currentTrack.next('.playlist-item');
+            var currentTrack = $(".currently-playing");
+            var nextTrack = currentTrack.next('.playlist-item');
         
-        if ( currentTrack.is(':last-child')){
-            return } 
-        else {
-            nextTrack.addClass('currently-playing');
-            currentTrack.removeClass('currently-playing');
-    
-            $('#audiosource').attr('src', nextTrack.attr('data-url') );
-            $('#audio')[0].load();
-            $('#audio')[0].play();
+            if ( currentTrack.is(':last-child')){
+                return } 
+            else {
+                moveToNextSong(currentTrack, nextTrack);
 
 // Handle error by silently moving to next track 
-//this needs some work, not sure how to handle errors effectively and some of this shit needs to me made into smaller functions
-// acually this error handler should be its own function!
+// acually this error handler should be its own function?
             var source =$('#audiosource')[0];
             source.addEventListener('error', function(e){
                 if (e){
                     currentTrack = $(".currently-playing");
                     nextTrack = currentTrack.next('.playlist-item');
-                    
-                    nextTrack.addClass('currently-playing');
-                    currentTrack.removeClass('currently-playing');
-                    
-                    $('#audiosource').attr('src', nextTrack.attr('data-url') );
-                    $('#audio')[0].load();
-                    $('#audio')[0].play();
+                    moveToNextSong(currentTrack, nextTrack);
                     }    
             });
         }
@@ -235,46 +227,26 @@ function addToPlaylist(event){
     $('#rewindaudio').on('click', function(){
         var currentTrack = $('.currently-playing');
         var prevTrack = currentTrack.prev('.playlist-item');
-    
-        if ( ($('#audio')[0].currentTime < 2) && $('li').index(currentTrack) ){
-            
-            $('#audiosource').attr('src', prevTrack.attr('data-url'));
-            $('#audio')[0].load();
-            $('#audio')[0].play();
-            currentTrack.removeClass('currently-playing');
-            prevTrack.addClass('currently-playing');
-            
-        }else{
-       $('#audio')[0].currentTime = 0; 
+            if ( ($('#audio')[0].currentTime < 2) && $('li').index(currentTrack) ){
+                moveToNextSong(currentTrack, prevTrack);
+            }else{
+        $('#audio')[0].currentTime = 0; 
         }
     });
     
     $('#ffaudio').on('click', function(){
         var currentTrack = $('.currently-playing');
         var nextTrack = currentTrack.next('.playlist-item');
-        $('#audiosource').attr('src', nextTrack.attr('data-url'));
-        $('#audio')[0].load();
-        $('#audio')[0].play();
-        currentTrack.removeClass('currently-playing');
-        nextTrack.addClass('currently-playing');
+        moveToNextSong(currentTrack, nextTrack);
     });
     
-//removes selected track from playlist
     $('#removeselected').on('click', function(){
-        
-        //check and see if selected is also currently playing and handle that somehow?
-        // rn it just loops on the deleted track
+    //check and see if selected is also currently playing - if so skip audio to next track before removing
         var $selected = $('.selected-playlisttrack');
         if ($selected.hasClass('currently-playing')) {
-        
-            // this is cut/paste str8 from the #ffaudio callback. now it REALLY needs to be its own function
             var currentTrack = $('.currently-playing');
             var nextTrack = currentTrack.next('.playlist-item');
-            $('#audiosource').attr('src', nextTrack.attr('data-url'));
-            $('#audio')[0].load();
-            $('#audio')[0].play();
-            currentTrack.removeClass('currently-playing');
-            nextTrack.addClass('currently-playing');
+            moveToNextSong(currentTrack, nextTrack);
         }
         $selected.remove();
     });
@@ -282,12 +254,18 @@ function addToPlaylist(event){
     $('#skiptoselected').on('click', function(){
         var $selected = $('.selected-playlisttrack');
         var $currentTrack = $('.currently-playing');
-        $selected.addClass('currently-playing');
-        $currentTrack.removeClass('.currently-playing');
-        $('#audiosource').attr('src', $selected.attr('data-url'));
-        $('#audio')[0].load();
-        $('#audio')[0].play();
+        moveToNextSong($currentTrack, $selected);
     });
 
-}());
+// function takes two DOM elements
+//i should rewrite this so nextsong is first argument and second argument is optional
+//then i can use it again in the if clause of the addtracktoplaylist function
+    function moveToNextSong(currentSong, nextSong){
+        $('#audiosource').attr('src', nextSong.attr('data-url') );
+        $('#audio')[0].load();
+        $('#audio')[0].play();
+        nextSong.addClass('currently-playing');
+        currentSong.removeClass('currently-playing');
+    }
 
+}());
