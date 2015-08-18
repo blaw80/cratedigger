@@ -38,7 +38,7 @@
         }
 
 function paginate(){
-      var show_per_page = 5;
+      var show_per_page = 12;
       var number_of_items = $('#songList tbody tr').length;
       var number_of_pages = Math.ceil(number_of_items/show_per_page);
 
@@ -65,7 +65,7 @@ function paginate(){
   function next(event){
       event.preventDefault();
       var new_page = parseInt($('.active_page').attr('data-pageNumber'), 10) + 1;
-      if (new_page < number_of_pages){
+      if (new_page <= number_of_pages){
           go_to_page(new_page);}
   }
 
