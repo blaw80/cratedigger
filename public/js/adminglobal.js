@@ -14,7 +14,6 @@
         $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
-      
     });
 
         function populateTable() {
@@ -33,8 +32,66 @@
             });
         // Inject the whole content string into our existing HTML table
             $('#songList table tbody').html(tableContent);
+       
+            paginate();
             });
         }
+
+function paginate(){
+      var show_per_page = 5;
+      var number_of_items = $('#songList tbody tr').length;
+      var number_of_pages = Math.ceil(number_of_items/show_per_page);
+
+      var navigation_html = '<a class="previous_link" href="#">Prev</a>';
+      var current_link = 1;
+      while(number_of_pages >= current_link){
+          navigation_html += '<a class="page_link" href="#" data-pageNumber="'+ current_link +'">'+ (current_link) +'</a>';
+          current_link++;}
+          
+      navigation_html += '<a class="next_link" href="#">Next</a>';
+      $('#page_navigation').html(navigation_html);
+      $('#page_navigation .page_link:first').addClass('active_page');
+      $('#songList tbody tr').css('display', 'none');
+      $('#songList tbody tr').slice(0, show_per_page + 1).css('display', '');
+
+  function previous(event){
+      event.preventDefault();
+      var new_page = $('.active_page').attr('data-pageNumber') - 1;
+      //if there is an item before the current active link run the function
+      if (new_page > 0){
+          go_to_page(new_page);}
+  }
+
+  function next(event){
+      event.preventDefault();
+      var new_page = parseInt($('.active_page').attr('data-pageNumber'), 10) + 1;
+      if (new_page < number_of_pages){
+          go_to_page(new_page);}
+  }
+
+    function skipToPage(event){
+        event.preventDefault();
+        var page_num = $(this).attr('data-pageNumber');
+        go_to_page(page_num);
+    }
+
+  function go_to_page(page_num){
+      var start_from = (page_num - 1)* show_per_page;
+      var end_on = start_from + show_per_page;
+    
+      //hide all children elements of content div, get specific items and show them
+      $('#songList tbody tr').css('display', 'none').slice(start_from, end_on).css('display', '');
+
+  // remove active class from all pages and assign it to page where data-pageNumber=page_num
+      $('#page_navigation .page_link').removeClass('active_page');
+      $('.page_link[data-pageNumber="'+page_num+'"]').addClass('active_page');
+  }
+  
+// event handlers for prev, next, & page_links
+    $('#page_navigation').on('click', 'a.previous_link', previous);
+    $('#page_navigation').on('click', 'a.next_link', next);
+    $('#page_navigation').on('click', 'a.page_link', skipToPage);
+}
 
         function showTrack(event){
             event.preventDefault();
