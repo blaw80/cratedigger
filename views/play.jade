@@ -1,0 +1,49 @@
+extends adminlayout
+
+block content
+    #container
+        h1 cratedigger 
+            
+        #primary
+
+            #trackInfo
+                h2 Track Info
+                p
+                    strong Title:
+                    |  <span id='trackInfoName'></span>
+                    br
+                    strong Artist:
+                    |  <span id='trackInfoArtist'></span>
+                    br
+                    strong Url:
+                    |  <span id='trackInfoUrl'></span>
+                    br
+                    strong Id:
+                    |  <span id='trackInfoId'></span>
+                    br
+                    |  <span id='editTrack'></span><span id='deleteTrackBtn'></span>
+            #editTrackForm
+                
+        #content
+            h2 Song List - 
+                |  <a href="#" id="addTrack">Add Track</a>
+            #songList
+               table
+                   thead
+                        th Track
+                        th Artist
+                        th Info
+                        th Play
+                    tbody
+                #page_navigation
+                    
+        #secondary
+            audio(id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg")
+                source(id="audiosource" type="audio/mp3" src="")
+            button(type="button" id="rewindaudio")="<|"
+            button(type="button" id="ffaudio")="|>"
+            button(type="button" id="removeselected") remove selected
+            button(type="button" id="skiptoselected") skip to selection
+            
+            #playlist    
+                ul

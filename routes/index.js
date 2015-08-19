@@ -11,7 +11,7 @@ module.exports = function(passport){
  
   /* Handle Login POST */
   router.post('/login', passport.authenticate('login', {
-    successRedirect: '/admin',
+    successRedirect: '/play',
     failureRedirect: '/',
     failureFlash : true 
   }));
@@ -23,25 +23,16 @@ module.exports = function(passport){
  
   /* Handle Registration POST */
   router.post('/signup', passport.authenticate('signup', {
-    successRedirect: '/admin',
+    successRedirect: '/play',
     failureRedirect: '/signup',
     failureFlash : true 
   }));
+  
+  /* Handle Logout */
+router.get('/signout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
  
   return router;
 };
-
-
-/*
-var express = require('express');
-var router = express.Router();
-
-// GET home page. /
-router.get('/', function(req, res) {
-    res.render('index', { title: 'Music Box' });
-});
-
-
-
-module.exports = router;
-*/
