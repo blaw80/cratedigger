@@ -121,7 +121,7 @@ function paginate(){
             
             // this time instead of fetching track details from our cached array, we will query the db 
             // call /trackinfo/:id route on admin.js
-            $.getJSON("/admin/trackinfo/"+thisTrackId, function(data){
+            $.getJSON("/play/trackinfo/"+thisTrackId, function(data){
                 // use jquery to replace #trackInfo div with a form
 
                 var editFormString = '<form id="formEditSongFields" name="editSong">'+
@@ -154,7 +154,7 @@ function paginate(){
             $.ajax({
                 type: 'PUT',
                 data: editedTrackInfo,
-                url: '/admin/updated/'+songId,
+                url: '/play/updated/'+songId,
                 dataType: 'JSON'
             }).done(function(response){
                 
@@ -177,7 +177,7 @@ function paginate(){
             if (confirmation === true){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/deletetrack/'+ thisTrackId
+                    url: '/play/deletetrack/'+ thisTrackId
                 }).done(function(response){
                     if (response.msg ===''){}
                     else {alert('error: '+ response.msg);}
@@ -205,7 +205,7 @@ function paginate(){
                                 'url': $('#addUrl').val()};
             $.ajax({
                 type: 'POST',
-                url: '/admin/addtrack',
+                url: '/play/addtrack',
                 dataType: 'JSON',
                 data: newTrackInfo
             }).done(function(response){
@@ -324,5 +324,31 @@ function paginate(){
         nextSong.addClass('currently-playing');
         currentSong.removeClass('currently-playing');
     }
+    
+    $('#savePlaylist').on('click', savePlaylist);
+    
+    function savePlaylist(){
+        var newPlaylist = [];
+        var playlistName = prompt('choose a name');
+        // for each li in #playlist:
+        $('#playlist li').each(function(index){
+            newPlaylist += {'song': $(this).text(), 'url': $(this).attr('data-url')};
+        });
+        var playlistDocument = {playlistName: newPlaylist};
+        // save the playlist somewhere?? POST?
+        $.ajax({
+                type: 'POST',
+                url: '/play/saveplaylist',
+                dataType: 'JSON',
+                data: playlistDocument
+            }).done(function(response){
+                if (response.msg ===''){
+            // UPDATE SOMETHING ON PAGE
+            alert('you saved a playlist');
+                }
+                    else {alert('error: '+ response.msg);}
+            });
+    }
 
 }());
+

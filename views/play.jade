@@ -5,7 +5,8 @@ block content
         h1 cratedigger 
             
         #primary
-
+            #account
+                a(href='/signout') Sign Out
             #trackInfo
                 h2 Track Info
                 p
@@ -44,6 +45,7 @@ block content
             button(type="button" id="ffaudio")="|>"
             button(type="button" id="removeselected") remove selected
             button(type="button" id="skiptoselected") skip to selection
+            button(type='button' id='savePlaylist') save playlist
             
             #playlist    
                 ul

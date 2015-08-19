@@ -12,11 +12,7 @@ router.get('/', isAuthenticated, function(req, res){
   res.render('play', { user: req.user });
 });
 
-/*
-router.get('/', function(req, res) {
-    res.render('play');
-});
-*/
+//AUTHENTICATE JSON AND OTHER ROUTES?
 
 // this gets called on pageload via AJAX request in adminglobal.js, sending all db collection info to be cached in an array
 router.get('/tracklist', function(req, res) {
@@ -69,6 +65,14 @@ router.post('/addtrack', function(req, res){
     });
 });
 
+router.post('/saveplaylist', function(req, res) {
+   var db = req.db;
+   var collection = db.get('playlists');
+   
+   collection.insert(req.body, function(err, result){
+       res.send((err===null) ? {msg: ''} : {msg:err});
+   });
+});
 /* add in router for search function
 
 router.get("/findsongs", function(req, res){
