@@ -10,7 +10,11 @@ var monk = require('monk');
 var dbPath = "mongodb://"+process.env.IP+":27017/musicdb";
 var db = monk(dbPath);
 
-var routes = require('./routes/index');
+var dbconfig = require('./db.js');
+var mongoose = require('mongoose');
+mongoose.connect(dbconfig.url);
+
+// var routes = require('./routes/index');
 var admin = require('./routes/admin');
 
 var app = express();
@@ -25,17 +29,33 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-// sessions
-//app.use(express.session({secret: '1234567890QWERTY'}));
-
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Configuring Passport
+var passport = require('passport');
+var expressSession = require('express-session');
+// TODO - Why Do we need this key ?
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
+ // Using the flash middleware provided by connect-flash to store messages in session
+ // and displaying in templates
+var flash = require('connect-flash');
+app.use(flash());
+
+// Initialize Passport
+var initPassport = require('./passport/init');
+initPassport(passport);
 
 app.use(function(req,res,next){
     req.db = db;
     next();
 });
 
+var routes = require('./routes/index')(passport);
 app.use('/', routes);
+
+// app.use('/', routes);
 app.use('/admin', admin);
 
 /// catch 404 and forwarding to error handler
