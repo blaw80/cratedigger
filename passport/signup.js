@@ -9,7 +9,7 @@ module.exports = function(passport){
         },
         function(req, username, password, done) {
 
-           var findOrCreateUser = function(){
+            findOrCreateUser = function(){
                 // find a user in Mongo with provided username
                 User.findOne({ 'username' :  username }, function(err, user) {
                     // In case of any error, return using the done method
@@ -55,5 +55,4 @@ module.exports = function(passport){
     var createHash = function(password){
         return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
     };
-
 };
