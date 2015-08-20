@@ -116,7 +116,7 @@ function paginate(){
     
         function editTrack(event){
             event.preventDefault();
-            
+
             var thisTrackId = $(this).attr('rel');
             var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
             var thisTrackObject = trackData[arrayPosition];
@@ -151,7 +151,7 @@ function paginate(){
                                 'artist': $('#editTrackForm input#editArtist').val(),
                                 'url': $('#editTrackForm input#editUrl').val() };
             var songId = $('#editTrackForm button#submitEdit').attr('data-id');
-            
+
             //post JSON data to collection & then run populateTable() to show updated info
             $.ajax({
                 type: 'PUT',

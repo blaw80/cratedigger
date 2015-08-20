@@ -13,7 +13,6 @@ router.get('/', function(req, res){
   res.render('play', { user: req.user });
 });
 
-//AUTHENTICATE JSON AND OTHER ROUTES?
 
 // this gets called on pageload via AJAX request in adminglobal.js, sending all db collection info to be cached in an array
 router.get('/tracklist', function(req, res) {
@@ -50,14 +49,14 @@ router.put('/updated/:id', isAuthenticated, function(req, res) {
     });
 });
 
-var isAuthenticatedAsBoo = function (req, res, next) {
+var isAuthenticatedPrivileged = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
   res.send( {msg: ''});
   res.redirect('/play');
 };
 
-router.delete('/deletetrack/:id', isAuthenticatedAsBoo, function(req, res){
+router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
    var db = req.db;
    var collection = db.get('musiccollection');
    
