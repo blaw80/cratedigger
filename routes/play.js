@@ -93,11 +93,10 @@ router.post('/saveplaylist', isAuthenticated, function(req, res) {
                         
                         newPlaylist.save(function(err) {
                             if (err){
-                                console.log('Error in Saving playlist: '+err);  
-                                throw err;  
+                                return res.send({msg: err});  
                             }
                             console.log('playlist save success');    
-                            return(null, newPlaylist);
+                            return res.send({msg: ''});
                             });
                         }
             }); 

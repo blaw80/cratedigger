@@ -348,7 +348,7 @@ function paginate(){
                 if (response.msg ===''){
            
            //THIS DOESN'T FIRE because response msg is never set
-           
+           alert('save success');
             // UPDATE SOMETHING ON PAGE
 
                 }
