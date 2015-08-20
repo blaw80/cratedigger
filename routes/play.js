@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var Playlist = require('../models/playlist');
 
 // check for authentication and call next or redirect
 var isAuthenticated = function (req, res, next) {
@@ -36,7 +37,7 @@ router.get('/trackinfo/:id', function(req, res){
 });
 
 // router for accepting data from edit form and writing to db
-router.put('/updated/:id', function(req, res) {
+router.put('/updated/:id', isAuthenticated, function(req, res) {
     var db = req.db;
     var collection = db.get('musiccollection');
 
@@ -47,7 +48,7 @@ router.put('/updated/:id', function(req, res) {
     });
 });
 
-router.delete('/deletetrack/:id', function(req, res){
+router.delete('/deletetrack/:id', isAuthenticated, function(req, res){
    var db = req.db;
    var collection = db.get('musiccollection');
    
@@ -56,7 +57,7 @@ router.delete('/deletetrack/:id', function(req, res){
    });
 });
 
-router.post('/addtrack', function(req, res){
+router.post('/addtrack', isAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('musiccollection');
     
@@ -65,14 +66,36 @@ router.post('/addtrack', function(req, res){
     });
 });
 
-router.post('/saveplaylist', function(req, res) {
-   var db = req.db;
-   var collection = db.get('playlists');
-   
-   collection.insert(req.body, function(err, result){
-       res.send((err===null) ? {msg: ''} : {msg:err});
-   });
-});
+router.post('/saveplaylist', isAuthenticated, function(req, res) {
+    
+   Playlist.findOne({ 'name' :  req.body.name }, function(err, playlist) {
+                    if (err){
+                        console.log('Error saving playlist '+err);
+                        return (err);
+                    }
+                    // already exists
+                    if (playlist) {
+                        console.log('Playlist already exists with name: '+req.body.name);
+                        return (null);
+                    } else {
+                        var newPlaylist = new Playlist();
+        
+                        newPlaylist.name = req.body.name;
+                        newPlaylist.creator = req.user.username;
+                        newPlaylist.tracks = req.body.tracks;
+                        
+                        newPlaylist.save(function(err) {
+                            if (err){
+                                console.log('Error in Saving playlist: '+err);  
+                                throw err;  
+                            }
+                            console.log('playlist save success');    
+                            return(null, newPlaylist);
+                            });
+                        }
+            }); 
+    });
+
 /* add in router for search function
 
 router.get("/findsongs", function(req, res){

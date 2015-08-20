@@ -328,27 +328,32 @@ function paginate(){
     $('#savePlaylist').on('click', savePlaylist);
     
     function savePlaylist(){
-        var newPlaylist = [];
         var playlistName = prompt('choose a name');
-        // for each li in #playlist:
+        var tracks = [];
+        var newPlaylist = {};
         $('#playlist li').each(function(index){
-            newPlaylist += {'song': $(this).text(), 'url': $(this).attr('data-url')};
+            tracks.push({'song': $(this).text(), 'url': $(this).attr('data-url')});
         });
-        var playlistDocument = {playlistName: newPlaylist};
-        // save the playlist somewhere?? POST?
+        newPlaylist.name = playlistName;
+        newPlaylist.creator = 'anon';
+        newPlaylist.tracks = tracks;
+            
         $.ajax({
                 type: 'POST',
                 url: '/play/saveplaylist',
                 dataType: 'JSON',
-                data: playlistDocument
+                contentType: 'application/json',
+                data: JSON.stringify(newPlaylist)
             }).done(function(response){
                 if (response.msg ===''){
+           
+           //THIS DOESN'T FIRE because response msg is never set
+           
             // UPDATE SOMETHING ON PAGE
-            alert('you saved a playlist');
+
                 }
                     else {alert('error: '+ response.msg);}
             });
     }
 
 }());
-
