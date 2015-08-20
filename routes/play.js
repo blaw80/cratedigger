@@ -9,7 +9,7 @@ var isAuthenticated = function (req, res, next) {
   res.redirect('/');
 };
 
-router.get('/', isAuthenticated, function(req, res){
+router.get('/', function(req, res){
   res.render('play', { user: req.user });
 });
 
