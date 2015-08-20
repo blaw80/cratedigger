@@ -24,6 +24,7 @@ router.get('/tracklist', function(req, res) {
     });
 });
 
+/*
 // use this router to fetch individual track info from db for edit function
 router.get('/trackinfo/:id', function(req, res){
     var db = req.db;
@@ -35,6 +36,7 @@ router.get('/trackinfo/:id', function(req, res){
     res.json(docs);
     });
 });
+*/
 
 // router for accepting data from edit form and writing to db
 router.put('/updated/:id', isAuthenticated, function(req, res) {

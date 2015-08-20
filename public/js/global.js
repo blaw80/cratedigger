@@ -117,21 +117,23 @@ function paginate(){
         function editTrack(event){
             event.preventDefault();
             
-            var thisTrackId = $(this).attr('rel');  
+            var thisTrackId = $(this).attr('rel');
+            var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
+            var thisTrackObject = trackData[arrayPosition];
             
             // this time instead of fetching track details from our cached array, we will query the db 
             // call /trackinfo/:id route on admin.js
-            $.getJSON("/play/trackinfo/"+thisTrackId, function(data){
+          //  $.getJSON("/play/trackinfo/"+thisTrackId, function(data){
                 // use jquery to replace #trackInfo div with a form
 
                 var editFormString = '<form id="formEditSongFields" name="editSong">'+
-                '<input id="editSongTitle" type="text" name="songname" value="' + data.songtitle +'">' + 
-                '<input id="editArtist" type="text" name="artistname" value="' +data.artist +'">' +
-                '<input id="editUrl" type="text" name="songurl" value="' + data.url +'">' +
-                '<button id="submitEdit" type="button" data-id="'+data._id+'">save changes</button><button type="button" id="cancelEdit">cancel</button></form>';
+                '<input id="editSongTitle" type="text" name="songname" value="' + thisTrackObject.songtitle +'">' + 
+                '<input id="editArtist" type="text" name="artistname" value="' +thisTrackObject.artist +'">' +
+                '<input id="editUrl" type="text" name="songurl" value="' + thisTrackObject.url +'">' +
+                '<button id="submitEdit" type="button" data-id="'+thisTrackObject._id+'">save changes</button><button type="button" id="cancelEdit">cancel</button></form>';
 
                 $('#editTrackForm').html(editFormString);            
-            });            
+        //    });            
         }
         
         function cancelEdit(event){
