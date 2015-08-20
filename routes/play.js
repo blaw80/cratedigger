@@ -48,7 +48,14 @@ router.put('/updated/:id', isAuthenticated, function(req, res) {
     });
 });
 
-router.delete('/deletetrack/:id', isAuthenticated, function(req, res){
+var isAuthenticatedAsBoo = function (req, res, next) {
+  if (req.user.username === 'boo')
+    return next();
+  res.send( {msg: ''})
+  res.redirect('/play');
+};
+
+router.delete('/deletetrack/:id', isAuthenticatedAsBoo, function(req, res){
    var db = req.db;
    var collection = db.get('musiccollection');
    

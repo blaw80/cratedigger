@@ -179,7 +179,7 @@ function paginate(){
                     type: 'DELETE',
                     url: '/play/deletetrack/'+ thisTrackId
                 }).done(function(response){
-                    if (response.msg ===''){}
+                    if (response.msg ===''){alert('delete privilege disabled')}
                     else {alert('error: '+ response.msg);}
                     populateTable();
                 });
