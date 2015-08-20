@@ -51,7 +51,7 @@ router.put('/updated/:id', isAuthenticated, function(req, res) {
 var isAuthenticatedAsBoo = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
-  res.send( {msg: ''})
+  res.send( {msg: ''});
   res.redirect('/play');
 };
 
