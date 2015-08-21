@@ -5,10 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
-var monk = require('monk');
-//  path for mongo driver
-var dbPath = "mongodb://"+process.env.IP+":27017/musicdb";
-var db = monk(dbPath);
+
 
 var dbconfig = require('./db.js');
 var mongoose = require('mongoose');
@@ -34,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Configuring Passport
 var passport = require('passport');
 var expressSession = require('express-session');
-// TODO - Why Do we need this key ?
+// Why Do we need this key ?
 app.use(expressSession({secret: 'mySecretKey',
                         resave: false,
                         saveUninitialized: false}));
@@ -49,15 +46,10 @@ app.use(flash());
 var initPassport = require('./passport/init');
 initPassport(passport);
 
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
 
 var routes = require('./routes/index')(passport);
 app.use('/', routes);
 
-// app.use('/', routes);
 app.use('/play', play);
 
 /// catch 404 and forwarding to error handler
