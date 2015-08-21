@@ -9,7 +9,8 @@ block content
                 a(href='/signout') Sign Out
             #trackInfo
                 h2 Track Info
-                p
+                button(id='addTrack' type='button') Add Track
+                p                    
                     strong Title:
                     |  <span id='trackInfoName'></span>
                     br
@@ -26,10 +27,10 @@ block content
             #editTrackForm
                 
         #content
-            h2 Song List - 
-                |  <a href="#" id="addTrack">Add Track</a>
+            #playLists
             #songList
                table
+                   h2 Song List
                    thead
                         th Track
                         th Artist
@@ -46,6 +47,7 @@ block content
             button(type="button" id="removeselected") remove selected
             button(type="button" id="skiptoselected") skip to selection
             button(type='button' id='savePlaylist') save playlist
+            button(type='button' id='loadPlaylist') load playlist
             
             #playlist    
                 ul

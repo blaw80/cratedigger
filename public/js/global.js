@@ -349,13 +349,44 @@ function paginate(){
             }).done(function(response){
                 if (response.msg ===''){
            
-           //THIS DOESN'T FIRE because response msg is never set
            alert('save success');
             // UPDATE SOMETHING ON PAGE
 
                 }
                     else {alert('error: '+ response.msg);}
             });
+    }
+    
+    $('#loadPlaylist').on('click', showPlaylists);
+
+    function showPlaylists(){
+        //ajax get all playlists
+        $.getJSON( '/play/playlists', function( data ) {
+           $.each(data, function(){
+              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a><br>'); 
+           });
+        });
+        $('#songList').css('display', 'none');
+        $('#playLists').css('display', '');
+    }
+    
+    $('#playLists').on('click', 'a', loadPlaylist);
+    
+    function loadPlaylist(){
+        var playlistId = $(this).attr('rel');
+
+        $.getJSON('/play/loadplaylist/'+playlistId, function(data){
+            var tracks = data.tracks;
+            $('#playlist ul').empty();
+            $.each(tracks, function(){ 
+               $('#playlist ul').append("<li data-url='"+this.url+"' class='playlist-item'>" + this.song +"</li>");
+           });
+            $('#playlist li:first').addClass('currently-playing');           
+            //reset display on songs 
+            $('#songList').css('display', '');
+            $('#playLists').css('display', 'none');
+            $('#playLists').empty();
+        });
     }
 
 }());

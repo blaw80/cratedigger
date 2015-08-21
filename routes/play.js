@@ -115,6 +115,27 @@ router.post('/saveplaylist', isAuthenticated, function(req, res) {
             }); 
     });
 
+router.get('/playlists', function(req, res) {
+    
+        Playlist.find({}, function(err, docs){
+        if (!err){
+            res.json(docs);
+        }
+        else {throw err}
+    });
+});
+
+router.get('/loadplaylist/:id', function(req, res) {
+    
+            Playlist.findOne({_id: req.params.id}, function(err, docs){
+                if(!err){
+                res.json(docs);
+                }
+                else {throw err}
+            });
+    
+});
+
 /* add in router for search function
 
 router.get("/findsongs", function(req, res){
