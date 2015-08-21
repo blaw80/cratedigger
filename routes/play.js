@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Playlist = require('../models/playlist');
+var Track = require('../models/track');
 
 // check for authentication and call next or redirect
 var isAuthenticated = function (req, res, next) {
@@ -14,13 +15,16 @@ router.get('/', function(req, res){
 });
 
 
-// this gets called on pageload via AJAX request in adminglobal.js, sending all db collection info to be cached in an array
+// this gets called on pageload via AJAX request in global.js, sending all db collection info to be cached in an array
 router.get('/tracklist', function(req, res) {
-    var db = req.db;
-    var collection = db.get('musiccollection');
-    collection.find({},{},function(e,docs){
-        res.json(docs);
+    
+    Track.find({}, function(err, docs){
+        if (!err){
+            res.json(docs);
+        }
+        else {throw err}
     });
+   
 });
 
 /*
@@ -39,39 +43,47 @@ router.get('/trackinfo/:id', function(req, res){
 
 // router for accepting data from edit form and writing to db
 router.put('/updated/:id', isAuthenticated, function(req, res) {
-    var db = req.db;
-    var collection = db.get('musiccollection');
 
-    collection.update({ '_id': req.params.id },{ $set: {songtitle: req.body.songtitle, artist: req.body.artist, url: req.body.url} }, function(err){
-        res.send(
-            (err === null) ? {msg: ''} : {msg: err}
-            );
+   Track.findOne({ _id: req.params.id }, function(err, docs){
+        if (!err){
+            docs.songtitle = req.body.songtitle;
+            docs.artist = req.body.artist;
+            docs.url = req.body.url;
+            docs.save();
+            res.send({msg:''});
+        }
+        else {throw err}
     });
 });
 
 var isAuthenticatedPrivileged = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
-  res.send( {msg: ''});
-  res.redirect('/play');
+    res.redirect('/play');
 };
 
 router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
-   var db = req.db;
-   var collection = db.get('musiccollection');
    
-   collection.remove({'_id': req.params.id}, function(err){
-       res.send((err===null) ? {msg: ''} : {msg: 'error: '+err});
+   Track.findByIdAndRemove(req.params.id, function(err){
+        res.send((err===null) ? {msg: ''} : {msg: 'error: ' +err});       
    });
 });
 
 router.post('/addtrack', isAuthenticated, function(req, res){
-    var db = req.db;
-    var collection = db.get('musiccollection');
     
-    collection.insert(req.body, function(err, result){
-        res.send((err===null) ? {msg: ''} : {msg: err});        
-    });
+    var newTrack = new Track();
+                        newTrack.songtitle = req.body.songtitle;
+                        newTrack.artist = req.body.artist;
+                        newTrack.url = req.body.url;
+                        
+                        newTrack.save(function(err) {
+                            if (err){
+                                return res.send({msg: err});  
+                            }
+                            console.log('track save success');    
+                            return res.send({msg: ''});
+                            });    
+ 
 });
 
 router.post('/saveplaylist', isAuthenticated, function(req, res) {
