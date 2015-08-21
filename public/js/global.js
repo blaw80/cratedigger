@@ -369,11 +369,11 @@ function paginate(){
                $('#playlist ul').append("<li data-url='"+this.url+"' class='playlist-item'>" + this.song +"</li>");
            });
            moveToNextSong($('#playlist li:first'));
-            //reset display on songs 
-            $('#songList').css('display', '');
-            $('#playLists').css('display', 'none');
-            $('#playLists').empty();
         });
+        //reset display on songs 
+        $('#songList').css('display', '');
+        $('#playLists').css('display', 'none');
+        $('#playLists').empty();
     }
 
 }());
