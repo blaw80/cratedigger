@@ -228,18 +228,10 @@ function paginate(){
             var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
             var thisTrackObject = trackData[arrayPosition];
             if ( ! $('#playlist li').length ){
-            var audio = $("#audio");      
-            $("#audiosource").attr("src", thisTrackObject.url);
-
-// handler for song with 404? the problem now is if the playlist is empty the error event fires but
-//there is no next track to move on to --- could make it so if error fires on initial add,
-// current track  class is not applied and moved to the next, or could alert user that the link
-// for this track is dead
-            audio[0].pause();
-            audio[0].load();
-            audio[0].play();
-
+             
             $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
+            moveToNextSong($('.playlist-item'));
+                
             } else { 
                 $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
             }
@@ -267,18 +259,7 @@ function paginate(){
             if ( currentTrack.is(':last-child')){
                 return } 
             else {
-                moveToNextSong(currentTrack, nextTrack);
-
-// Handle error by silently moving to next track 
-// acually this error handler should be its own function?
-            var source =$('#audiosource')[0];
-            source.addEventListener('error', function(e){
-                if (e){
-                    currentTrack = $(".currently-playing");
-                    nextTrack = currentTrack.next('.playlist-item');
-                    moveToNextSong(currentTrack, nextTrack);
-                    }    
-            });
+                moveToNextSong(nextTrack, currentTrack);
         }
     });
 
@@ -287,7 +268,7 @@ function paginate(){
         var currentTrack = $('.currently-playing');
         var prevTrack = currentTrack.prev('.playlist-item');
             if ( ($('#audio')[0].currentTime < 2) && $('li').index(currentTrack) ){
-                moveToNextSong(currentTrack, prevTrack);
+                moveToNextSong(prevTrack, currentTrack);
             }else{
         $('#audio')[0].currentTime = 0; 
         }
@@ -296,7 +277,7 @@ function paginate(){
     $('#ffaudio').on('click', function(){
         var currentTrack = $('.currently-playing');
         var nextTrack = currentTrack.next('.playlist-item');
-        moveToNextSong(currentTrack, nextTrack);
+        moveToNextSong(nextTrack, currentTrack);
     });
     
     $('#removeselected').on('click', function(){
@@ -305,7 +286,7 @@ function paginate(){
         if ($selected.hasClass('currently-playing')) {
             var currentTrack = $('.currently-playing');
             var nextTrack = currentTrack.next('.playlist-item');
-            moveToNextSong(currentTrack, nextTrack);
+            moveToNextSong(nextTrack, currentTrack);
         }
         $selected.remove();
     });
@@ -313,18 +294,24 @@ function paginate(){
     $('#skiptoselected').on('click', function(){
         var $selected = $('.selected-playlisttrack');
         var $currentTrack = $('.currently-playing');
-        moveToNextSong($currentTrack, $selected);
+        moveToNextSong($selected, $currentTrack);
     });
 
 // function takes two DOM elements
-//i should rewrite this so nextsong is first argument and second argument is optional
-//then i can use it again in the if clause of the addtracktoplaylist function
-    function moveToNextSong(currentSong, nextSong){
+    function moveToNextSong(nextSong, currentSong){
         $('#audiosource').attr('src', nextSong.attr('data-url') );
         $('#audio')[0].load();
         $('#audio')[0].play();
         nextSong.addClass('currently-playing');
         currentSong.removeClass('currently-playing');
+        
+        var source =$('#audiosource')[0];
+            source.addEventListener('error', function(e){
+                if (e){
+                    var nextTrack = nextSong.next('.playlist-item');
+                    moveToNextSong(nextTrack, nextSong);
+                    }    
+            });
     }
     
     $('#savePlaylist').on('click', savePlaylist);
@@ -381,7 +368,7 @@ function paginate(){
             $.each(tracks, function(){ 
                $('#playlist ul').append("<li data-url='"+this.url+"' class='playlist-item'>" + this.song +"</li>");
            });
-            $('#playlist li:first').addClass('currently-playing');           
+           moveToNextSong($('#playlist li:first'));
             //reset display on songs 
             $('#songList').css('display', '');
             $('#playLists').css('display', 'none');
