@@ -6,7 +6,13 @@ block content
             
         #primary
             #account
-                a(href='/signout') Sign Out
+                - var User = (user || '')
+                if  User === ''
+                    p welcome Guest
+                    a(href='/') Sign In
+                else
+                    p welcome #{user.username}
+                    a(href='/signout') Sign Out
             #trackInfo
                 h2 Track Info
                 button(id='addTrack' type='button') Add Track
