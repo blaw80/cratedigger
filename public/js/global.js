@@ -216,7 +216,7 @@ function paginate(){
                     populateTable();
                     $('#editTrackForm').empty();
                 }
-                    else if (response.msg === '0'){alert("you can't do that, try signing in first")}
+                    else if (response.msg === 'dupe'){alert("that url is already in the database")}
                     //else {alert('error: '+ response.msg);}
             });
         }

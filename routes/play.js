@@ -72,18 +72,30 @@ router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
 
 router.post('/addtrack', isAuthenticated, function(req, res){
     
-    var newTrack = new Track();
-                        newTrack.songtitle = req.body.songtitle;
-                        newTrack.artist = req.body.artist;
-                        newTrack.url = req.body.url;
+    Track.findOne({url: req.body.url}, function (err, docs){
+        if(!err){
+            if (docs){
+                console.log('that url is already in db');
+                return res.send({msg: 'dupe'});
+            }
+            else{
+                var newTrack = new Track();
+                    newTrack.songtitle = req.body.songtitle;
+                    newTrack.artist = req.body.artist;
+                    newTrack.url = req.body.url;
                         
-                        newTrack.save(function(err) {
+                    newTrack.save(function(err) {
                             if (err){
                                 return res.send({msg: err});  
                             }
                             console.log('track save success');    
                             return res.send({msg: ''});
-                            });    
+                            });               
+            }
+        }
+        else{throw err}
+    });
+    
 });
 
 router.post('/saveplaylist', isAuthenticated, function(req, res) {
