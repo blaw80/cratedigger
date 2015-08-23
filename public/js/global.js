@@ -354,7 +354,9 @@ function paginate(){
         $.getJSON( '/play/playlists', function( data ) {
             $('#playLists').append('<h2>There are '+ data.length + ' playlists to choose from');
             $.each(data, function(){
-              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a><button type="button" class="upvotePlaylist" data-name="'+this.name+'">*</button><br>'); 
+                var thisStars;
+                this.stars===undefined ? thisStars = 0 : thisStars = this.stars;
+              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a>Starred '+thisStars+' times <button type="button" class="upvotePlaylist" data-name="'+this.name+'">*</button><br>'); 
            });
         });
         $('#songList').css('display', 'none');
@@ -396,7 +398,7 @@ function paginate(){
                     alert('posted');
             
                 }
-                    else if (response.msg === '0'){alert("you can't do that, try signing in first")}
+                    else if (response.msg === 'already starred'){alert(response)}
                     //else {alert('error: '+ response.msg);}
             });
     }

@@ -138,7 +138,8 @@ router.get('/loadplaylist/:id', function(req, res) {
 });
 
 router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
-                //append reqparams.playlist to User.starred
+    
+                // if req.user.starred contain req.params.playlist -> return and send error
                 
                 User.findOne({username: req.user.username}, function(err, user) {
                     if (!err){
@@ -153,9 +154,10 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                     }
                 });
                 
-                Playlist.findOne({_id:req.params.playlist}, function(err, playlist){
+                Playlist.findOne({name: req.params.playlist}, function(err, playlist){
                   if (!err){
-                    playlist.stars += 1;
+                    if (playlist.stars===undefined){playlist.stars = 1;}  
+                    else {playlist.stars += 1;}
                     
                     playlist.save(function(err) {
                             if (err){
