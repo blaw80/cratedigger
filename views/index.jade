@@ -4,13 +4,14 @@ block content
     h1= title
     p Welcome to #{title}
     div
-        p Login:
+        a(href='/play') Browse as a Guest 
+        p or login below:
     #login
         form(class='form-signin', action='/login', method='POST')
             input(type='text', name='username', class='form-control', placeholder='email', required, autofocus)
             input(type='password', name='password', class='form-control', placeholder='password', required)
-            button(class='btn btn-lg btn-primary btn-block', type='submit') Sign in
-    a(href='/signup', class='text-center new-account') Create an account
+            button(type='submit') Sign in
+    a(href='/signup') Create an account
           #message
               if message
                 h1.text-center.error-message #{message}

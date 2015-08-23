@@ -7,7 +7,7 @@ var Track = require('../models/track');
 var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated())
     return next();
-  res.redirect('/');
+    res.send({msg: "0"});
 };
 
 router.get('/', function(req, res){
@@ -59,7 +59,8 @@ router.put('/updated/:id', isAuthenticated, function(req, res) {
 var isAuthenticatedPrivileged = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
-    res.redirect('/play');
+    res.send({msg: '0'});
+//    res.redirect('/play');
 };
 
 router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
@@ -87,6 +88,8 @@ router.post('/addtrack', isAuthenticated, function(req, res){
 });
 
 router.post('/saveplaylist', isAuthenticated, function(req, res) {
+    
+    //need to write code that explains these errors to the user
     
    Playlist.findOne({ 'name' :  req.body.name }, function(err, playlist) {
                     if (err){

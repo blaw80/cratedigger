@@ -167,7 +167,8 @@ function paginate(){
                   $('#editTrackForm').empty();
                   populateTable();
               }
-              else {alert('error'+ response.msg);}
+              else if (response.msg === '0') { alert('you must be signed in for that') ; }
+              //else {alert('error'+ response.msg);}
             });
         }
         
@@ -182,7 +183,7 @@ function paginate(){
                     url: '/play/deletetrack/'+ thisTrackId
                 }).done(function(response){
                     if (response.msg ===''){alert('delete successful')}
-                    else {alert('error: no delete privilege ' + response.msg);}
+                    else if (response.msg === '0') {alert("you don't have delete permission")}
                     populateTable();
                 });
             }
@@ -215,7 +216,8 @@ function paginate(){
                     populateTable();
                     $('#editTrackForm').empty();
                 }
-                    else {alert('error: '+ response.msg);}
+                    else if (response.msg === '0'){alert("you can't do that, try signing in first")}
+                    //else {alert('error: '+ response.msg);}
             });
         }
         
@@ -340,7 +342,7 @@ function paginate(){
             // UPDATE SOMETHING ON PAGE
 
                 }
-                    else {alert('error: '+ response.msg);}
+                    else if (response.msg === '0') {alert('sign in or create an account to do this')}
             });
     }
     
