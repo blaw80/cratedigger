@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Playlist = require('../models/playlist');
 var Track = require('../models/track');
+var User = require('../models/user');
 
 // check for authentication and call next or redirect
 var isAuthenticated = function (req, res, next) {
@@ -60,7 +61,6 @@ var isAuthenticatedPrivileged = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
     res.send({msg: '0'});
-//    res.redirect('/play');
 };
 
 router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
@@ -84,7 +84,6 @@ router.post('/addtrack', isAuthenticated, function(req, res){
                             console.log('track save success');    
                             return res.send({msg: ''});
                             });    
- 
 });
 
 router.post('/saveplaylist', isAuthenticated, function(req, res) {
@@ -136,7 +135,38 @@ router.get('/loadplaylist/:id', function(req, res) {
                 }
                 else {throw err}
             });
-    
+});
+
+router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
+                //append reqparams.playlist to User.starred
+                
+                User.findOne({username: req.user.username}, function(err, user) {
+                    if (!err){
+                        user.starred.push({ playlistName: req.params.playlist});         
+                        user.save(function(err){
+                            if (err){
+                                return res.send({msg: err});  
+                            }
+                            console.log('starred success');    
+                            return res.send({msg: ''});
+                            });
+                    }
+                });
+                
+                Playlist.findOne({_id:req.params.playlist}, function(err, playlist){
+                  if (!err){
+                    playlist.stars += 1;
+                    
+                    playlist.save(function(err) {
+                            if (err){
+                                return res.send({msg: err});  
+                            }
+                            console.log('starred success');    
+                            return res.send({msg: ''});
+                            });  
+                  }
+                });
+
 });
 
 /* add in router for search function

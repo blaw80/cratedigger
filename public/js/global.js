@@ -354,7 +354,7 @@ function paginate(){
         $.getJSON( '/play/playlists', function( data ) {
             $('#playLists').append('<h2>There are '+ data.length + ' playlists to choose from');
             $.each(data, function(){
-              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a><br>'); 
+              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a><button type="button" class="upvotePlaylist" data-name="'+this.name+'">*</button><br>'); 
            });
         });
         $('#songList').css('display', 'none');
@@ -378,6 +378,27 @@ function paginate(){
         $('#songList').css('display', '');
         $('#playLists').css('display', 'none');
         $('#playLists').empty();
+    }
+
+    $('#playLists').on('click', 'button.upvotePlaylist', starPlaylist);
+    
+    function starPlaylist(){
+        var thisplaylist = $(this).attr('data-name');
+       //  alert(thisplaylist);
+         $.ajax({
+                type: 'POST',
+                url: '/play/starplaylist/'+thisplaylist,
+                dataType: 'String',
+                data: thisplaylist
+            }).done(function(response){
+                if (response.msg ===''){
+
+                    alert('posted');
+            
+                }
+                    else if (response.msg === '0'){alert("you can't do that, try signing in first")}
+                    //else {alert('error: '+ response.msg);}
+            });
     }
 
 }());
