@@ -349,9 +349,11 @@ function paginate(){
     $('#loadPlaylist').on('click', showPlaylists);
 
     function showPlaylists(){
+        $('#playLists').empty();
         //ajax get all playlists
         $.getJSON( '/play/playlists', function( data ) {
-           $.each(data, function(){
+            $('#playLists').append('<h2>There are '+ data.length + ' playlists to choose from');
+            $.each(data, function(){
               $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a><br>'); 
            });
         });
