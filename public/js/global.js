@@ -104,10 +104,7 @@ function paginate(){
             
             $('#trackInfoName').text(thisTrackObject.songtitle);
             $('#trackInfoArtist').text(thisTrackObject.artist);
-            
-            //should really be using native js methods for dom manipulation like this one:
             $('#trackInfoUrl').html('<textarea class="urlttextarea">'+thisTrackObject.url+'</textarea>');
-            
             $('#trackInfoId').text(thisTrackObject._id);
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Track Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel="'+thisTrackObject._id + '">Delete Track</a>');
@@ -163,7 +160,7 @@ function paginate(){
               if (response.msg === '')  {
                   $('#trackInfoName').text(editedTrackInfo.songtitle);
                   $('#trackInfoArtist').text(editedTrackInfo.artist);
-                  $('#trackInfoUrl').text(editedTrackInfo.url);
+                  $('#trackInfoUrl .urlttextarea').text(editedTrackInfo.url);
                   $('#editTrackForm').empty();
                   populateTable();
               }
@@ -217,7 +214,7 @@ function paginate(){
                     $('#editTrackForm').empty();
                 }
                     else if (response.msg === 'dupe'){alert("that url is already in the database")}
-                    //else {alert('error: '+ response.msg);}
+                    else if (response.msg === '0'){alert('you must be signed in for that')}
             });
         }
         
@@ -322,6 +319,7 @@ function paginate(){
         var playlistName = prompt('choose a name');
         var tracks = [];
         var newPlaylist = {};
+        if (playlistName ==='') {alert('name cannot be left blank'); return}
         $('#playlist li').each(function(index){
             tracks.push({'song': $(this).text(), 'url': $(this).attr('data-url')});
         });
@@ -381,6 +379,13 @@ function paginate(){
         $('#playLists').css('display', 'none');
         $('#playLists').empty();
     }
+$('#loadSongs').on('click', loadSongs);
+
+    function loadSongs(){
+        $('#songList').css('display', '');
+        $('#playLists').css('display', 'none');
+        $('#playLists').empty();
+    }
 
     $('#playLists').on('click', 'button.upvotePlaylist', starPlaylist);
     
@@ -394,11 +399,10 @@ function paginate(){
                 data: thisplaylist
             }).done(function(response){
                 if (response.msg ===''){
-
                     alert('posted');
-            
                 }
-                    else if (response.msg === 'already starred'){alert(response)}
+                else if (response.msg === '0'){alert('you must be signed in for that')}
+                    else {alert(response.msg)}
                     //else {alert('error: '+ response.msg);}
             });
     }

@@ -60,7 +60,7 @@ router.put('/updated/:id', isAuthenticated, function(req, res) {
 var isAuthenticatedPrivileged = function (req, res, next) {
   if (req.user.username === 'boo')
     return next();
-    res.send({msg: '0'});
+    res.send({msg: "0"});
 };
 
 router.delete('/deletetrack/:id', isAuthenticatedPrivileged, function(req, res){
@@ -151,10 +151,18 @@ router.get('/loadplaylist/:id', function(req, res) {
 
 router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
     
-                // if req.user.starred contain req.params.playlist -> return and send error
+    // if req.user.starred contain req.params.playlist -> return and send error
+    var beenStarred = false;
+    for (var i = 0; i < req.user.starred.length; i++){
                 
+        if (req.user.starred[i].playlistName === req.params.playlist) {return beenStarred = true}       
+        
+    }
+        if (!beenStarred)
+            {    
                 User.findOne({username: req.user.username}, function(err, user) {
                     if (!err){
+                        
                         user.starred.push({ playlistName: req.params.playlist});         
                         user.save(function(err){
                             if (err){
@@ -164,10 +172,14 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                             return res.send({msg: ''});
                             });
                     }
+                    else {return res.send({msg: '0'});}
                 });
                 
                 Playlist.findOne({name: req.params.playlist}, function(err, playlist){
                   if (!err){
+                      
+                     if (playlist === null) { return }
+                      
                     if (playlist.stars===undefined){playlist.stars = 1;}  
                     else {playlist.stars += 1;}
                     
@@ -180,7 +192,8 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                             });  
                   }
                 });
-
+            }
+            else {res.send({msg: 'you already starred this track'})}
 });
 
 /* add in router for search function
