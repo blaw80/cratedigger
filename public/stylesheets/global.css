@@ -1,7 +1,34 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+ 
   background-color: black;
+}
+
+#headline h1{
+	text-align: left;
+	margin-left: 20%;
+}
+#account {
+    color: white;
+}
+
+#content {
+    background: gray;
+}
+
+#player {
+    background: darkslategray;
+}
+#player button{
+	color: white;
+}
+
+#audio{
+	display: block;
+	margin: 5px auto;
+}
+
+#footer {
+    clear: both;
 }
 
 a {
@@ -53,7 +80,7 @@ h1 {
 	}
 
  	.urlttextarea {
- 		width:220px;
+ 		width:170px;
  		height: 35px;
  	}
 
@@ -88,30 +115,3 @@ h1 {
 		color:white;
 	}
 
-#container {
-    width: 1025px;
-    margin: 0 auto;
-}
-
-#primary {
-    float: left;
-    width: 240px;
-    background: blanchedalmond;
-}
-
-#content {
-    float: left;
-    width: 480px;
-    background: gray;
-    
-}
-
-#secondary {
-    float: left;
-    width: 305px;
-    background: darkslategray;
-}
-
-#footer {
-    clear: both;
-}
