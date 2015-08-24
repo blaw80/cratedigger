@@ -4,6 +4,35 @@ body {
   background-color: black;
 }
 
+
+#container {
+    width: 960px;
+    margin: 0 auto;
+}
+
+#primary {
+    float: left;
+    width: 180px;
+    background: blanchedalmond;
+}
+
+#content {
+    float: left;
+    width: 460px;
+    background: gray;
+    
+}
+
+#secondary {
+    float: left;
+    width: 320px;
+    background: darkslategray;
+}
+
+#footer {
+    clear: both;
+}
+
 a {
   color: #00B7FF;
 }
@@ -53,7 +82,7 @@ h1 {
 	}
 
  	.urlttextarea {
- 		width:220px;
+ 		width:170px;
  		height: 35px;
  	}
 
@@ -88,30 +117,3 @@ h1 {
 		color:white;
 	}
 
-#container {
-    width: 1025px;
-    margin: 0 auto;
-}
-
-#primary {
-    float: left;
-    width: 240px;
-    background: blanchedalmond;
-}
-
-#content {
-    float: left;
-    width: 480px;
-    background: gray;
-    
-}
-
-#secondary {
-    float: left;
-    width: 305px;
-    background: darkslategray;
-}
-
-#footer {
-    clear: both;
-}

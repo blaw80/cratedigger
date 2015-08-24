@@ -38,7 +38,7 @@
         }
 
 function paginate(){
-      var show_per_page = 12;
+      var show_per_page = 8;
       var number_of_items = $('#songList tbody tr').length;
       var number_of_pages = Math.ceil(number_of_items/show_per_page);
 
@@ -105,8 +105,7 @@ function paginate(){
             $('#trackInfoName').text(thisTrackObject.songtitle);
             $('#trackInfoArtist').text(thisTrackObject.artist);
             $('#trackInfoUrl').html('<textarea class="urlttextarea">'+thisTrackObject.url+'</textarea>');
-            $('#trackInfoId').text(thisTrackObject._id);
-            $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Track Details</a>');
+            $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel="'+thisTrackObject._id + '">Delete Track</a>');
             $( '#editTrackForm' ).empty();
         }    
@@ -351,7 +350,7 @@ function paginate(){
         $('#playLists').empty();
         //ajax get all playlists
         $.getJSON( '/play/playlists', function( data ) {
-            $('#playLists').append('<h2>There are '+ data.length + ' playlists to choose from');
+            $('#playLists').append('<h4>There are '+ data.length + ' playlists to choose from</h4>');
             $.each(data, function(){
                 var thisStars;
                 this.stars===undefined ? thisStars = 0 : thisStars = this.stars;
