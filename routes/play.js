@@ -109,8 +109,8 @@ router.post('/saveplaylist', isAuthenticated, function(req, res) {
                     }
                     // already exists
                     if (playlist) {
-                        console.log('Playlist already exists with name: '+req.body.name);
-                        return (null);
+                       // console.log('Playlist already exists with name: '+req.body.name);
+                        return res.send({msg: 'playlists already exists with that name'});
                     } else {
                         var newPlaylist = new Playlist();
         

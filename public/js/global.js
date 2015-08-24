@@ -341,6 +341,7 @@ function paginate(){
 
                 }
                     else if (response.msg === '0') {alert('sign in or create an account to do this')}
+                    else {alert(response.msg);}
             });
     }
     
