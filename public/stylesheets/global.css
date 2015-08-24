@@ -6,26 +6,26 @@ body {
 
 
 #container {
-    width: 960px;
+    width: 1080px;
     margin: 0 auto;
 }
 
 #primary {
     float: left;
-    width: 180px;
+    width: 200px;
     background: blanchedalmond;
 }
 
 #content {
     float: left;
-    width: 460px;
+    width: 540px;
     background: gray;
     
 }
 
 #secondary {
     float: left;
-    width: 320px;
+    width: 340px;
     background: darkslategray;
 }
 
