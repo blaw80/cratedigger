@@ -95,7 +95,9 @@ function paginate(){
 
         function showTrack(event){
             event.preventDefault();
-
+            $('#playLists').empty();
+            $('#songList').css('display', 'none');
+            $('#trackInfo').css('display', '');
             // get id from link rel
             var thisTrackId = $(this).attr('rel');
             
@@ -106,7 +108,7 @@ function paginate(){
             $('#trackInfoArtist').text(thisTrackObject.artist);
             $('#trackInfoUrl').html('<textarea class="urlttextarea">'+thisTrackObject.url+'</textarea>');
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Details</a>');
-            $('#deleteTrackBtn').html('<a href="#" class="deletebutton rel="'+thisTrackObject._id + '">Delete Track</a>');
+            $('#deleteTrackBtn').html('<a href="#" class="deletebutton" rel="'+thisTrackObject._id + '">Delete Track</a>');
             $( '#editTrackForm' ).empty();
         }    
     
@@ -146,6 +148,7 @@ function paginate(){
             var editedTrackInfo = { 'songtitle': $('#editTrackForm input#editSongTitle').val(),
                                 'artist': $('#editTrackForm input#editArtist').val(),
                                 'url': $('#editTrackForm input#editUrl').val() };
+            //just use 'this' :)
             var songId = $('#editTrackForm button#submitEdit').attr('data-id');
 
             //post JSON data to collection & then run populateTable() to show updated info
@@ -170,8 +173,8 @@ function paginate(){
         
         function deleteTrack(event){
             event.preventDefault();
-            var confirmation = confirm("are you sure you want to delete this track?");
-            var thisTrackId = $('#trackInfoId').text();
+            var thisTrackId = $(this).attr('rel');
+            var confirmation = confirm("are you sure you want to delete this track?"+thisTrackId);
 
             if (confirmation === true){
                 $.ajax({
@@ -188,6 +191,10 @@ function paginate(){
 
         function addTrack(event){
             event.preventDefault();
+            $('#playLists').empty();
+            $('#songList').css('display', 'none');
+            $('#trackInfo').css('display', '');
+            
             $('#editTrackForm').empty();
             var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
                 '<input id="addSongTitle" type="text" name="songname" placeholder="song title">' + 
@@ -209,6 +216,10 @@ function paginate(){
                 data: newTrackInfo
             }).done(function(response){
                 if (response.msg ===''){
+                    $('#trackInfoName').text(newTrackInfo.songtitle);
+                    $('#trackInfoArtist').text(newTrackInfo.artist);
+                    $('#trackInfoUrl .urlttextarea').text(newTrackInfo.url);
+
                     populateTable();
                     $('#editTrackForm').empty();
                 }
@@ -358,6 +369,7 @@ function paginate(){
            });
         });
         $('#songList').css('display', 'none');
+        $('#trackInfo').css('display', 'none');
         $('#playLists').css('display', '');
     }
     
@@ -379,11 +391,13 @@ function paginate(){
         $('#playLists').css('display', 'none');
         $('#playLists').empty();
     }
+    
 $('#loadSongs').on('click', loadSongs);
 
     function loadSongs(){
         $('#songList').css('display', '');
         $('#playLists').css('display', 'none');
+        $('#trackInfo').css('display', 'none');
         $('#playLists').empty();
     }
 

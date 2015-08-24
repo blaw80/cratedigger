@@ -1,32 +1,30 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+ 
   background-color: black;
 }
 
-
-#container {
-    width: 1080px;
-    margin: 0 auto;
+#headline h1{
+	text-align: left;
+	margin-left: 20%;
 }
-
-#primary {
-    float: left;
-    width: 200px;
-    background: blanchedalmond;
+#account {
+    color: white;
 }
 
 #content {
-    float: left;
-    width: 540px;
     background: gray;
-    
 }
 
-#secondary {
-    float: left;
-    width: 340px;
+#player {
     background: darkslategray;
+}
+#player button{
+	color: white;
+}
+
+#audio{
+	display: block;
+	margin: 5px auto;
 }
 
 #footer {
