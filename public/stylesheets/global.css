@@ -1,12 +1,10 @@
 body {
- 
   background-color: black;
 }
 
 #headline h1{
 	text-align: left;
 	margin-left: 20%;
-	color: lightslategray;
 }
 #account {
     color: white;
@@ -14,12 +12,10 @@ body {
 
 #content {
     background: gray;
-    min-width: 333px;
 }
 
 #player {
     background: darkslategray;
-    min-width: 340px;
 }
 #player button{
 	color: white;
@@ -36,6 +32,11 @@ body {
 
 a {
   color: #00B7FF;
+}
+
+h1 {
+	text-align: center;
+	color: lightslategray;
 }
 
 #songList {

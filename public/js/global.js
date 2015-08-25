@@ -420,5 +420,15 @@ $('#loadSongs').on('click', loadSongs);
                     //else {alert('error: '+ response.msg);}
             });
     }
+    
+    $('#showPlayer').on('click', showPlayer);
+    
+    function showPlayer(){
+        // hide playLists, songList, trackInfo
+        $('#playLists').css('display', 'none');
+        $('#songList').css('display', 'none');
+        $('#trackInfo').css('display', 'none');
+        $('#player').css('display', 'block')
+    }
 
 }());
