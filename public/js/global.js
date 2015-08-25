@@ -442,7 +442,6 @@ function paginate(){
     
     function handleNav(){
         var link = $(this).attr('id');
-        alert(link);
         if (link === 'showPlayer'){showPlayer(event);}
         if (link === 'loadSongs'){loadSongs(event);}
         if (link === 'addTrack'){addTrack(event);}
