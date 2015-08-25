@@ -11,7 +11,7 @@
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
         $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
         $('#editTrackForm').on('click', 'button#cancelEdit', cancelEdit);
-        $('#addTrack').on('click', addTrack);
+    //    $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
     });
@@ -110,6 +110,8 @@ function paginate(){
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton" rel="'+thisTrackObject._id + '">Delete Track</a>');
             $( '#editTrackForm' ).empty();
+            resetNav();
+            $('#trackInfo').css('display', '');
         }    
     
         function editTrack(event){
@@ -191,9 +193,10 @@ function paginate(){
 
         function addTrack(event){
             event.preventDefault();
+
             $('#playLists').empty();
             $('#songList').css('display', 'none');
-            $('#trackInfo').css('display', '');
+            $('#trackInfo').css('display', 'block');
             
             $('#editTrackForm').empty();
             var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
@@ -355,9 +358,9 @@ function paginate(){
             });
     }
     
-    $('#loadPlaylist').on('click', showPlaylists);
 
-    function showPlaylists(){
+    function showPlaylists(event){
+        event.preventDefault();
         $('#playLists').empty();
         //ajax get all playlists
         $.getJSON( '/play/playlists', function( data ) {
@@ -392,9 +395,8 @@ function paginate(){
         $('#playLists').empty();
     }
     
-$('#loadSongs').on('click', loadSongs);
-
-    function loadSongs(){
+    function loadSongs(event){
+        event.preventDefault();
         $('#songList').css('display', '');
         $('#playLists').css('display', 'none');
         $('#trackInfo').css('display', 'none');
@@ -421,14 +423,30 @@ $('#loadSongs').on('click', loadSongs);
             });
     }
     
-    $('#showPlayer').on('click', showPlayer);
-    
-    function showPlayer(){
-        // hide playLists, songList, trackInfo
+    function resetNav(){
         $('#playLists').css('display', 'none');
         $('#songList').css('display', 'none');
         $('#trackInfo').css('display', 'none');
-        $('#player').css('display', 'block')
+        
+        /// IF  button #showplaaaayer is visible?
+        $('#player').css('display', 'none');
     }
-
+    
+    function showPlayer(event){
+        event.preventDefault();
+        resetNav();
+        $('#player').css('display', 'block');
+    }
+    
+    $('#content').on('click', 'button', handleNav);
+    
+    function handleNav(){
+        var link = $(this).attr('id');
+        alert(link);
+        if (link === 'showPlayer'){showPlayer(event);}
+        if (link === 'loadSongs'){loadSongs(event);}
+        if (link === 'addTrack'){addTrack(event);}
+        if (link === 'loadPlaylist'){showPlaylists(event);}
+    }
+    
 }());
