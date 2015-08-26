@@ -237,15 +237,14 @@ function paginate(){
             
             var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
             var thisTrackObject = trackData[arrayPosition];
-            if ( ! $('#playlist li').length ){
-             
-            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item currently-playing'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
-            moveToNextSong($('.playlist-item'));
-                
-            } else { 
-                $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + "</li>");
-            }
-}
+
+            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + '  -  <span id="removeFromPlaylist">trashit</span></li>');
+            
+            if ( $('#playlist li').length === 1 ){
+                var firstTrack = $('.playlist-item');
+                moveToNextSong(firstTrack);
+            } 
+    }
 
  //highlight track on hover in playlist
     $('#playlist').on({
@@ -256,11 +255,6 @@ function paginate(){
             $(this).removeClass('highlightedplaylisttrack');}
             }, ".playlist-item");
             
-/*select track on click in playlist
-    $('#playlist').on('click', 'li.playlist-item', function(){
-            $('#playlist li').removeClass('selected-playlisttrack');
-            $(this).addClass('selected-playlisttrack');});
-  */          
     $('#playlist').on('dblclick', 'li.playlist-item', function(event){
         event.preventDefault();
         var $currentTrack = $('.currently-playing');
@@ -297,9 +291,10 @@ function paginate(){
         moveToNextSong(nextTrack, currentTrack);
     });
     
-    $('#removeselected').on('click', function(){
+    $('#playlist').on('click', '#removeFromPlaylist', function(event){
+        event.preventDefault();
     //check and see if selected is also currently playing - if so skip audio to next track before removing
-        var $selected = $('.selected-playlisttrack');
+        var $selected = $(this).parent();  //$('.selected-playlisttrack');
         if ($selected.hasClass('currently-playing')) {
             var currentTrack = $('.currently-playing');
             var nextTrack = currentTrack.next('.playlist-item');
@@ -314,8 +309,9 @@ function paginate(){
         $('#audio')[0].load();
         $('#audio')[0].play();
         nextSong.addClass('currently-playing');
-        currentSong.removeClass('currently-playing');
-        
+            if (arguments.length > 1){
+                currentSong.removeClass('currently-playing');
+            }
         var source =$('#audiosource')[0];
             source.addEventListener('error', function(e){
                 if (e){

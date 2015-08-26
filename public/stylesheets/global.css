@@ -82,11 +82,6 @@ a {
 		background-color: gray;
 	}
 	
-	.selected-playlisttrack{
-		background-color: white;
-		color: black;
-	}
-	
 	.currently-playing{
 		background-color: steelblue;
 		color:white;
