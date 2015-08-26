@@ -110,8 +110,6 @@ function paginate(){
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton" rel="'+thisTrackObject._id + '">Delete Track</a>');
             $( '#editTrackForm' ).empty();
-            resetNav();
-            $('#trackInfo').css('display', '');
         }    
     
         function editTrack(event){
@@ -258,10 +256,17 @@ function paginate(){
             $(this).removeClass('highlightedplaylisttrack');}
             }, ".playlist-item");
             
-//select track on click in playlist
+/*select track on click in playlist
     $('#playlist').on('click', 'li.playlist-item', function(){
             $('#playlist li').removeClass('selected-playlisttrack');
             $(this).addClass('selected-playlisttrack');});
+  */          
+    $('#playlist').on('dblclick', 'li.playlist-item', function(event){
+        event.preventDefault();
+        var $currentTrack = $('.currently-playing');
+        var $selected = $(this);
+        moveToNextSong($selected, $currentTrack);
+    });
 
 // detect track ended event and load next track
     $('#audio')[0].addEventListener('ended', function(){
@@ -301,12 +306,6 @@ function paginate(){
             moveToNextSong(nextTrack, currentTrack);
         }
         $selected.remove();
-    });
-
-    $('#skiptoselected').on('click', function(){
-        var $selected = $('.selected-playlisttrack');
-        var $currentTrack = $('.currently-playing');
-        moveToNextSong($selected, $currentTrack);
     });
 
 // function takes two DOM elements
