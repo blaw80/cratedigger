@@ -42,13 +42,13 @@ function paginate(){
       var number_of_items = $('#songList tbody tr').length;
       var number_of_pages = Math.ceil(number_of_items/show_per_page);
 
-      var navigation_html = '<a class="previous_link" href="#">Prev</a>';
+      var navigation_html = '<a class="previous_link button" href="#">Prev</a>';
       var current_link = 1;
       while(number_of_pages >= current_link){
-          navigation_html += '<a class="page_link" href="#" data-pageNumber="'+ current_link +'">'+ (current_link) +'</a>';
+          navigation_html += '<a class="page_link button" href="#" data-pageNumber="'+ current_link +'">'+ (current_link) +'</a>';
           current_link++;}
           
-      navigation_html += '<a class="next_link" href="#">Next</a>';
+      navigation_html += '<a class="next_link button" href="#">Next</a>';
       $('#page_navigation').html(navigation_html);
       $('#page_navigation .page_link:first').addClass('active_page');
       $('#songList tbody tr').css('display', 'none');

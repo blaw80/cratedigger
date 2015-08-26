@@ -47,8 +47,8 @@ block content
             #player(class='five columns')
                 audio(id="audio" preload="auto" tabindex="0" controls="" type="audio/mpeg")
                     source(id="audiosource" type="audio/mp3" src="")
-                button(type="button" id="rewindaudio")="<|"
-                button(type="button" id="ffaudio")="|>"
+                button(type="button" id="rewindaudio" class="fa fa-step-backward")
+                button(type="button" id="ffaudio" class="fa fa-step-forward")
                 button(type='button' id='savePlaylist') save playlist
     
                 #playlist    
