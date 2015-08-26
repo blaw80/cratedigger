@@ -77,7 +77,11 @@ a {
 		margin: -1px;
 		padding: 4px;
 	}
-
+	
+	#removeFromPlaylist{
+		float: right;
+	}
+	
 	.highlightedplaylisttrack {
 		background-color: gray;
 	}

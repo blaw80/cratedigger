@@ -238,7 +238,7 @@ function paginate(){
             var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
             var thisTrackObject = trackData[arrayPosition];
 
-            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + '  -  <span id="removeFromPlaylist">trashit</span></li>');
+            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + '<span id="removeFromPlaylist" class="fa fa-trash-o"></span></li>');
             
             if ( $('#playlist li').length === 1 ){
                 var firstTrack = $('.playlist-item');
