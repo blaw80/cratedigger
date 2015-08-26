@@ -5,8 +5,8 @@
         
         populateTable();
     //click listeners for info & edit button
-        $('#songList table tbody').on('click', 'td a.infobutton', showTrack);
-        $('#songList table tbody').on('click', 'td a.addtoplaylist', addToPlaylist);
+        $('#songList table tbody').on('click', 'td .infobutton', showTrack);
+        $('#songList table tbody').on('click', 'td .addtoplaylist', addToPlaylist);
         $('#trackInfo p').on('click', 'a.editbutton', editTrack);
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
         $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
@@ -26,8 +26,8 @@
                 tableContent += '<tr>';
                 tableContent += '<td>'+this.songtitle + '</td>';
                 tableContent += '<td>' + this.artist + '</td>';
-                tableContent += '<td><a href="#" class="infobutton" rel="' + this._id + '">info</a></td>';
-                tableContent += '<td><a href="#" class="addtoplaylist" rel="' + this._id + '">+</a></td>';
+                tableContent += '<td><span class="infobutton fa fa-info-circle" rel="' + this._id + '"></span></td>';
+                tableContent += '<td><span class="addtoplaylist fa fa-plus-circle" rel="' + this._id + '"></span></td>';
                 tableContent += '</tr>';
             });
         // Inject the whole content string into our existing HTML table
@@ -363,7 +363,7 @@ function paginate(){
             $.each(data, function(){
                 var thisStars;
                 this.stars===undefined ? thisStars = 0 : thisStars = this.stars;
-              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a>Starred '+thisStars+' times <button type="button" class="upvotePlaylist" data-name="'+this.name+'">*</button><br>'); 
+              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a>Starred '+thisStars+' times <span class="upvotePlaylist fa fa-star-o" data-name="'+this.name+'"></span><br>'); 
            });
         });
         $('#songList').css('display', 'none');
@@ -398,7 +398,7 @@ function paginate(){
         $('#playLists').empty();
     }
 
-    $('#playLists').on('click', 'button.upvotePlaylist', starPlaylist);
+    $('#playLists').on('click', '.upvotePlaylist', starPlaylist);
     
     function starPlaylist(){
         var thisplaylist = $(this).attr('data-name');
