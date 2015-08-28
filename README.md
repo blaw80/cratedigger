@@ -5,7 +5,7 @@ to load dependencies
 
 then: npm start
 
-you will need to have a mongodb server running as well, and if you want to use the existing sample database located in /data you may also have to repair the files using: mongod --dbpath=data --repair
+you will need to have a mongodb server running as well
 
 todos:
 * routing to allow sharing of playlists via url
