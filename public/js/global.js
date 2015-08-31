@@ -16,6 +16,43 @@
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
     });
 
+function populateTable() {
+
+    $.getJSON( '/play/tracklist', function( data ) {
+    trackData = data;
+    var table = document.getElementById('tracksTableBody');
+    $(table).empty();
+    $.each(data, function(){
+        var trow = document.createElement('tr');
+
+        var song = document.createElement('td');
+        var songText = document.createTextNode(this.songtitle);
+        song.appendChild(songText);
+        trow.appendChild(song);
+
+        var artist = document.createElement('td');
+        var artistText = document.createTextNode(this.artist);
+        artist.appendChild(artistText);
+        trow.appendChild(artist);
+
+        var info = document.createElement('td');
+        var infoHtml = '<span class="infobutton fa fa-info-circle" rel="' + this._id + '"></span>';
+        info.innerHTML = infoHtml;
+        trow.appendChild(info);
+
+        var addTrack = document.createElement('td');
+        var addTrackHtml = '<span class="addtoplaylist fa fa-plus-circle" rel="' + this._id + '"></span>';
+        addTrack.innerHTML = addTrackHtml;
+        trow.appendChild(addTrack);
+
+        table.appendChild(trow);
+    });
+
+    paginate();
+    });
+}
+
+/*
         function populateTable() {
 
             var tableContent = '';
@@ -36,7 +73,7 @@
             paginate();
             });
         }
-
+*/
 function paginate(){
       var show_per_page = 5;
       var number_of_items = $('#songList tbody tr').length;

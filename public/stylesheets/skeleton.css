@@ -405,8 +405,12 @@ there.
   display:none;
 }
 #content{ min-width: 330px;}
+
+table {margin: 0 10px;}
+
 /* Larger than mobile */
-@media (min-width: 400px) {}
+@media (min-width: 400px) {
+}
 
 /* Larger than phablet (also point when grid becomes active) */
 @media (min-width: 600px) {
@@ -422,7 +426,10 @@ there.
 @media (min-width: 1020px) {
   #player{margin-left:20px;
   }
+  table {margin: 0 auto;}
+
   #showPlayer{display:none;}
+
   #player{display:block;}
 }
 
