@@ -156,7 +156,6 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
     for (var i = 0; i < req.user.starred.length; i++){
                 
         if (req.user.starred[i].playlistName === req.params.playlist) { beenStarred = true}       
-        
     }
         if (!beenStarred)
             {    
@@ -168,8 +167,6 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                             if (err){
                                 return res.send({msg: err});  
                             }
-                            // console.log('starred success');    
-                           // return res.send({msg: ''});
                                Playlist.findOne({name: req.params.playlist}, function(err, playlist){
                                   if (!err){
                                       
@@ -191,8 +188,6 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                     }
                     else {return res.send({msg: err});}
                 });
-                
-                
             }
             else {res.send({msg: 'you already starred this track'})}
 });
