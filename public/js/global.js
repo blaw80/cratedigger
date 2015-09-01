@@ -11,7 +11,6 @@
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
         $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
         $('#editTrackForm').on('click', 'button#cancelEdit', cancelEdit);
-    //    $('#addTrack').on('click', addTrack);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
         $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
     });
@@ -52,28 +51,6 @@ function populateTable() {
     });
 }
 
-/*
-        function populateTable() {
-
-            var tableContent = '';
-            $.getJSON( '/play/tracklist', function( data ) {
-            trackData = data;
-        // For each item in our JSON, add a table row and cells to the content string
-            $.each(data, function(){
-                tableContent += '<tr>';
-                tableContent += '<td>'+this.songtitle + '</td>';
-                tableContent += '<td>' + this.artist + '</td>';
-                tableContent += '<td><span class="infobutton fa fa-info-circle" rel="' + this._id + '"></span></td>';
-                tableContent += '<td><span class="addtoplaylist fa fa-plus-circle" rel="' + this._id + '"></span></td>';
-                tableContent += '</tr>';
-            });
-        // Inject the whole content string into our existing HTML table
-            $('#songList table tbody').html(tableContent);
-       
-            paginate();
-            });
-        }
-*/
 function paginate(){
       var show_per_page = 5;
       var number_of_items = $('#songList tbody tr').length;
@@ -279,85 +256,107 @@ function paginate(){
             
             if ( $('#playlist li').length === 1 ){
                 var firstTrack = $('.playlist-item');
-                moveToNextSong(firstTrack);
+                audioPlayer.moveToNextSong(firstTrack);
             } 
     }
-
- //highlight track on hover in playlist
-    $('#playlist').on({
-            mouseenter: function () {
-            $(this).addClass('highlightedplaylisttrack');
-            },
-            mouseleave: function () {
-            $(this).removeClass('highlightedplaylisttrack');}
-            }, ".playlist-item");
+    
+        var audioPlayer = {
             
-    $('#playlist').on('dblclick', 'li.playlist-item', function(event){
-        event.preventDefault();
-        var $currentTrack = $('.currently-playing');
-        var $selected = $(this);
-        moveToNextSong($selected, $currentTrack);
-    });
+            init: function(){
+                this.cachedDom();
+                this.bindEvents();
+                
+            },
+            
+            bindEvents: function(){
+                this.$ffaudio.on('click', this.ffaudio.bind(this));
+                this.$rewindaudio.on('click', this.rewindaudio.bind(this));
+                this.audio.addEventListener('ended', this.trackEnded.bind(this));
+                this.$audioSource[0].addEventListener('error', this.handleAudioErr.bind(this));
+                this.$playlist.on('dblclick', 'li.playlist-item', this.skipToTrack);
+                this.$playlist.on('click', '#removeFromPlaylist', this.removeFromPlaylist);
+                this.$playlist.on({ mouseenter: this.addHighlight,
+                    mouseleave: this.removeHighlight
+                    }, ".playlist-item");
+                },
 
-// detect track ended event and load next track
-    $('#audio')[0].addEventListener('ended', function(){
-            var currentTrack = $(".currently-playing");
-            var nextTrack = currentTrack.next('.playlist-item');
+            removeHighlight:  function () {
+                    $(this).removeClass('highlightedplaylisttrack');},
+                
+            addHighlight: function() {
+                    $(this).addClass('highlightedplaylisttrack');
+                    },
+            
+            removeFromPlaylist: function(event){
+                event.preventDefault();
+                //check and see if selected is also currently playing - if so skip audio to next track before removing
+                    var $selected = $(this).parent();
+                    if ($selected.hasClass('currently-playing')) {
+                        audioPlayer.ffaudio();
+                    }
+                    $selected.remove();
+                },
+            
+            skipToTrack: function(event){
+                event.preventDefault();
+                var $currentTrack = $('.currently-playing');
+                var $selected = $(this);
+                audioPlayer.moveToNextSong($selected, $currentTrack);
+            },
+            
+            handleAudioErr: function(e){
+                    if (e) {
+                        //should check and see if node is last child
+                        this.ffaudio();}    
+                },
         
-            if ( currentTrack.is(':last-child')){
-                return } 
-            else {
-                moveToNextSong(nextTrack, currentTrack);
-        }
-    });
+            trackEnded: function(){
+                var currentTrack = $(".currently-playing");
+                var nextTrack = currentTrack.next('.playlist-item');
+                if ( currentTrack.is(':last-child')){
+                    return } 
+                else {
+                    this.moveToNextSong(nextTrack, currentTrack);
+                    }
+            },
 
-// rewind track and if currentTime < 2 load previous track
-    $('#rewindaudio').on('click', function(){
-        var currentTrack = $('.currently-playing');
-        var prevTrack = currentTrack.prev('.playlist-item');
-            if ( ($('#audio')[0].currentTime < 2) && $('li').index(currentTrack) ){
-                moveToNextSong(prevTrack, currentTrack);
-            }else{
-        $('#audio')[0].currentTime = 0; 
-        }
-    });
-    
-    $('#ffaudio').on('click', function(){
-        var currentTrack = $('.currently-playing');
-        var nextTrack = currentTrack.next('.playlist-item');
-        moveToNextSong(nextTrack, currentTrack);
-    });
-    
-    $('#playlist').on('click', '#removeFromPlaylist', function(event){
-        event.preventDefault();
-    //check and see if selected is also currently playing - if so skip audio to next track before removing
-        var $selected = $(this).parent();  //$('.selected-playlisttrack');
-        if ($selected.hasClass('currently-playing')) {
-            var currentTrack = $('.currently-playing');
-            var nextTrack = currentTrack.next('.playlist-item');
-            moveToNextSong(nextTrack, currentTrack);
-        }
-        $selected.remove();
-    });
+            rewindaudio: function(){
+                var currentTrack = $('.currently-playing');
+                var prevTrack = currentTrack.prev('.playlist-item');
+                if ( (this.audio.currentTime < 2) && $('li').index(currentTrack) ){
+                this.moveToNextSong(prevTrack, currentTrack);}
+                else{
+                this.audio.currentTime = 0; 
+                }
+            },
 
-// function takes two DOM elements
-    function moveToNextSong(nextSong, currentSong){
-        $('#audiosource').attr('src', nextSong.attr('data-url') );
-        $('#audio')[0].load();
-        $('#audio')[0].play();
-        nextSong.addClass('currently-playing');
-            if (arguments.length > 1){
-                currentSong.removeClass('currently-playing');
+            ffaudio: function(){
+                var currentTrack = $('.currently-playing');
+                var nextTrack = currentTrack.next('.playlist-item');
+                this.moveToNextSong(nextTrack, currentTrack);
+            },
+            
+            cachedDom: function(){
+                this.$rewindaudio = $('#rewindaudio');
+                this.$ffaudio = $('#ffaudio');
+                this.$savePlaylist = $('#savePlaylist');
+                this.$playlist = $('#playlist');
+                this.audio = $('#audio')[0];
+                this.$audioSource = $('#audiosource');
+            },
+            
+            moveToNextSong: function(nextSong, currentSong){
+            this.$audioSource.attr('src', nextSong.attr('data-url') );
+            this.audio.load();
+            this.audio.play();
+            nextSong.addClass('currently-playing');
+                if (arguments.length > 1){
+                    currentSong.removeClass('currently-playing');
+                }
             }
-        var source =$('#audiosource')[0];
-            source.addEventListener('error', function(e){
-                if (e){
-                    var nextTrack = nextSong.next('.playlist-item');
-                    moveToNextSong(nextTrack, nextSong);
-                    }    
-            });
-    }
-    
+        };
+        audioPlayer.init();
+
     $('#savePlaylist').on('click', savePlaylist);
     
     function savePlaylist(){
@@ -419,7 +418,7 @@ function paginate(){
             $.each(tracks, function(){ 
                $('#playlist ul').append("<li data-url='"+this.url+"' class='playlist-item'>" + this.song +"</li>");
            });
-           moveToNextSong($('#playlist li:first'));
+           audioPlayer.moveToNextSong($('#playlist li:first'));
         });
         //reset display on songs 
         $('#songList').css('display', '');
