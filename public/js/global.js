@@ -275,11 +275,40 @@ function paginate(){
                 this.$audioSource[0].addEventListener('error', this.handleAudioErr.bind(this));
                 this.$playlist.on('dblclick', 'li.playlist-item', this.skipToTrack);
                 this.$playlist.on('click', '#removeFromPlaylist', this.removeFromPlaylist);
-                this.$playlist.on({ mouseenter: this.addHighlight,
-                    mouseleave: this.removeHighlight
-                    }, ".playlist-item");
+                this.$playlist.on({ mouseenter: this.addHighlight, mouseleave: this.removeHighlight }, ".playlist-item");
+                this.$savePlaylist.on('click', this.savePlaylist);
+    
+    
                 },
-
+            
+            savePlaylist: function(){
+                var playlistName = prompt('choose a name');
+                var tracks = [];
+                var newPlaylist = {};
+                if (playlistName ==='') {alert('name cannot be left blank'); return}
+                $('#playlist li').each(function(index){
+                    tracks.push({'song': $(this).text(), 'url': $(this).attr('data-url')});
+                });
+                newPlaylist.name = playlistName;
+                newPlaylist.creator = 'anon';
+                newPlaylist.tracks = tracks;
+                    
+                $.ajax({
+                        type: 'POST',
+                        url: '/play/saveplaylist',
+                        dataType: 'JSON',
+                        contentType: 'application/json',
+                        data: JSON.stringify(newPlaylist)
+                    }).done(function(response){
+                        if (response.msg ===''){
+                           alert('save success');
+                        // UPDATE SOMETHING ON PAGE
+                        }
+                            else if (response.msg === '0') {alert('sign in or create an account to do this')}
+                            else {alert(response.msg);}
+                    });
+                },
+            
             removeHighlight:  function () {
                     $(this).removeClass('highlightedplaylisttrack');},
                 
@@ -356,39 +385,6 @@ function paginate(){
             }
         };
         audioPlayer.init();
-
-    $('#savePlaylist').on('click', savePlaylist);
-    
-    function savePlaylist(){
-        var playlistName = prompt('choose a name');
-        var tracks = [];
-        var newPlaylist = {};
-        if (playlistName ==='') {alert('name cannot be left blank'); return}
-        $('#playlist li').each(function(index){
-            tracks.push({'song': $(this).text(), 'url': $(this).attr('data-url')});
-        });
-        newPlaylist.name = playlistName;
-        newPlaylist.creator = 'anon';
-        newPlaylist.tracks = tracks;
-            
-        $.ajax({
-                type: 'POST',
-                url: '/play/saveplaylist',
-                dataType: 'JSON',
-                contentType: 'application/json',
-                data: JSON.stringify(newPlaylist)
-            }).done(function(response){
-                if (response.msg ===''){
-           
-           alert('save success');
-            // UPDATE SOMETHING ON PAGE
-
-                }
-                    else if (response.msg === '0') {alert('sign in or create an account to do this')}
-                    else {alert(response.msg);}
-            });
-    }
-    
 
     function showPlaylists(event){
         event.preventDefault();
