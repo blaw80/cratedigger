@@ -155,7 +155,7 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
     var beenStarred = false;
     for (var i = 0; i < req.user.starred.length; i++){
                 
-        if (req.user.starred[i].playlistName === req.params.playlist) {return beenStarred = true}       
+        if (req.user.starred[i].playlistName === req.params.playlist) { beenStarred = true}       
         
     }
         if (!beenStarred)
@@ -168,30 +168,31 @@ router.post('/starplaylist/:playlist', isAuthenticated, function(req, res) {
                             if (err){
                                 return res.send({msg: err});  
                             }
-                            console.log('starred success');    
-                            return res.send({msg: ''});
+                            // console.log('starred success');    
+                           // return res.send({msg: ''});
+                               Playlist.findOne({name: req.params.playlist}, function(err, playlist){
+                                  if (!err){
+                                      
+                                     if (playlist === null) { return res.send({msg: 'error, playlist not found'})}
+                                      
+                                    if (playlist.stars===undefined){playlist.stars = 1;}  
+                                    else {playlist.stars += 1;}
+                                    
+                                    playlist.save(function(err) {
+                                            if (err){
+                                                return res.send({msg: err});  
+                                            }
+                                            console.log('starred success');    
+                                            return res.send({msg: ''});
+                                            });  
+                                  }
+                                });
                             });
                     }
-                    else {return res.send({msg: '0'});}
+                    else {return res.send({msg: err});}
                 });
                 
-                Playlist.findOne({name: req.params.playlist}, function(err, playlist){
-                  if (!err){
-                      
-                     if (playlist === null) { return }
-                      
-                    if (playlist.stars===undefined){playlist.stars = 1;}  
-                    else {playlist.stars += 1;}
-                    
-                    playlist.save(function(err) {
-                            if (err){
-                                return res.send({msg: err});  
-                            }
-                            console.log('starred success');    
-                            return res.send({msg: ''});
-                            });  
-                  }
-                });
+                
             }
             else {res.send({msg: 'you already starred this track'})}
 });
