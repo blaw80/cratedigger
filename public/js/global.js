@@ -203,22 +203,6 @@ function paginate(){
             else {return false}
             }
 
-        function addTrack(event){
-            event.preventDefault();
-
-            $('#playLists').empty();
-            $('#songList').css('display', 'none');
-            $('#trackInfo').css('display', 'block');
-            
-            $('#editTrackForm').empty();
-            var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
-                '<input id="addSongTitle" type="text" name="songname" placeholder="song title">' + 
-                '<input id="addArtist" type="text" name="artistname" placeholder="artist">' +
-                '<input id="addUrl" type="text" name="songurl" placeholder="url">' +
-                '<button id="submitNewTrack" type="button">save changes</button><button type="button" id="cancelAdd">cancel</button></form>';
-            $('#editTrackForm').html(addTrackString);
-        }
-        
         function writeNewTrack(event){
             event.preventDefault();
             var newTrackInfo = {'songtitle': $('#addSongTitle').val(),
@@ -265,7 +249,6 @@ function paginate(){
             init: function(){
                 this.cachedDom();
                 this.bindEvents();
-                
             },
             
             bindEvents: function(){
@@ -277,8 +260,6 @@ function paginate(){
                 this.$playlist.on('click', '#removeFromPlaylist', this.removeFromPlaylist);
                 this.$playlist.on({ mouseenter: this.addHighlight, mouseleave: this.removeHighlight }, ".playlist-item");
                 this.$savePlaylist.on('click', this.savePlaylist);
-    
-    
                 },
             
             savePlaylist: function(){
@@ -375,34 +356,96 @@ function paginate(){
             },
             
             moveToNextSong: function(nextSong, currentSong){
-            this.$audioSource.attr('src', nextSong.attr('data-url') );
-            this.audio.load();
-            this.audio.play();
-            nextSong.addClass('currently-playing');
-                if (arguments.length > 1){
-                    currentSong.removeClass('currently-playing');
-                }
+                this.$audioSource.attr('src', nextSong.attr('data-url') );
+                this.audio.load();
+                this.audio.play();
+                nextSong.addClass('currently-playing');
+                    if (arguments.length > 1){
+                        currentSong.removeClass('currently-playing');
+                    }
             }
         };
         audioPlayer.init();
 
-    function showPlaylists(event){
-        event.preventDefault();
-        $('#playLists').empty();
-        //ajax get all playlists
-        $.getJSON( '/play/playlists', function( data ) {
-            $('#playLists').append('<h4>There are '+ data.length + ' playlists to choose from</h4>');
-            $.each(data, function(){
-                var thisStars;
-                this.stars===undefined ? thisStars = 0 : thisStars = this.stars;
-              $('#playLists').append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a>Starred '+thisStars+' times <span class="upvotePlaylist fa fa-star-o" data-name="'+this.name+'"></span><br>'); 
-           });
-        });
-        $('#songList').css('display', 'none');
-        $('#trackInfo').css('display', 'none');
-        $('#playLists').css('display', '');
-    }
+        var mainContent = {
+            init: function(){
+                this.cachedDom();
+                this.bindEvents();
+            },
+            
+            cachedDom: function(){
+                 this.$songList = $('#songList');
+                 this.$trackInfo = $('#trackInfo');
+                 this.$playLists = $('#playLists');
+            },
+            
+            bindEvents: function(){
+                $('#content').on('click', 'button', this.handleNav);
+            },
+            
+            handleNav: function(){
+                var link = $(this).attr('id');
+                if (link === 'showPlayer'){mainContent.showPlayer(event);}
+                if (link === 'loadSongs'){mainContent.loadSongs(event).bind(this);}
+                if (link === 'addTrack'){mainContent.addTrack(event);}
+                if (link === 'loadPlaylist'){mainContent.showPlaylists(event);}
+            },
+            
+            showPlayer: function (event){
+                event.preventDefault();
+                this.resetNav();
+                $('#player').css('display', 'block');
+            },
+            
+            resetNav: function (){
+                this.$playLists.css('display', 'none');
+                this.$songList.css('display', 'none');
+                this.$trackInfo.css('display', 'none');
+                //should re-write this to be more modular, take an argument for which item to display
+            },
     
+            showPlaylists: function(event){
+                event.preventDefault();
+                this.$playLists.empty();
+                //ajax get all playlists
+                $.getJSON( '/play/playlists', function( data ) {
+                    mainContent.$playLists.append('<h4>There are '+ data.length + ' playlists to choose from</h4>');
+                    $.each(data, function(){
+                        var thisStars;
+                        this.stars===undefined ? thisStars = 0 : thisStars = this.stars;
+                      mainContent.$playLists.append('<a href="#" rel="'+this._id+'">' + this.name + ' - created by: ' + this.creator + '</a>Starred '+thisStars+' times <span class="upvotePlaylist fa fa-star-o" data-name="'+this.name+'"></span><br>'); 
+                   });
+                });
+                this.$songList.css('display', 'none');
+                this.$trackInfo.css('display', 'none');
+                this.$playLists.css('display', 'block');
+            },
+              
+            loadSongs: function(event){
+                event.preventDefault();
+                this.$songList.css('display', '');
+                //this.$playLists.css('display', 'none');
+                this.$trackInfo.css('display', 'none');
+                this.$playLists.empty();
+            },
+            
+            addTrack: function(event){
+                event.preventDefault();
+                this.$playLists.empty();
+                this.$songList.css('display', 'none');
+                this.$trackInfo.css('display', 'block');
+                
+                $('#editTrackForm').empty();
+                var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
+                    '<input id="addSongTitle" type="text" name="songname" placeholder="song title">' + 
+                    '<input id="addArtist" type="text" name="artistname" placeholder="artist">' +
+                    '<input id="addUrl" type="text" name="songurl" placeholder="url">' +
+                    '<button id="submitNewTrack" type="button">save changes</button><button type="button" id="cancelAdd">cancel</button></form>';
+                $('#editTrackForm').html(addTrackString);
+            }
+        };
+        mainContent.init();
+
     $('#playLists').on('click', 'a', loadPlaylist);
     
     function loadPlaylist(){
@@ -419,14 +462,6 @@ function paginate(){
         //reset display on songs 
         $('#songList').css('display', '');
         $('#playLists').css('display', 'none');
-        $('#playLists').empty();
-    }
-    
-    function loadSongs(event){
-        event.preventDefault();
-        $('#songList').css('display', '');
-        $('#playLists').css('display', 'none');
-        $('#trackInfo').css('display', 'none');
         $('#playLists').empty();
     }
 
@@ -449,30 +484,5 @@ function paginate(){
                     //else {alert('error: '+ response.msg);}
             });
     }
-    
-    function resetNav(){
-        $('#playLists').css('display', 'none');
-        $('#songList').css('display', 'none');
-        $('#trackInfo').css('display', 'none');
-        
-        /// IF  button #showplaaaayer is visible?
-        $('#player').css('display', 'none');
-    }
-    
-    function showPlayer(event){
-        event.preventDefault();
-        resetNav();
-        $('#player').css('display', 'block');
-    }
-    
-    $('#content').on('click', 'button', handleNav);
-    
-    function handleNav(){
-        var link = $(this).attr('id');
-        if (link === 'showPlayer'){showPlayer(event);}
-        if (link === 'loadSongs'){loadSongs(event);}
-        if (link === 'addTrack'){addTrack(event);}
-        if (link === 'loadPlaylist'){showPlaylists(event);}
-    }
-    
+
 }());
