@@ -4,15 +4,9 @@
     $(document).ready(function(){
         
         populateTable();
-    //click listeners for info & edit button
-        $('#songList table tbody').on('click', 'td .infobutton', showTrack);
-        $('#songList table tbody').on('click', 'td .addtoplaylist', addToPlaylist);
-        $('#trackInfo p').on('click', 'a.editbutton', editTrack);
         $('#trackInfo p').on('click','a.deletebutton', deleteTrack);
         $('#editTrackForm').on('click', 'button#submitEdit', displayUpdated);
-        $('#editTrackForm').on('click', 'button#cancelEdit', cancelEdit);
         $('#editTrackForm').on('click', 'button#submitNewTrack', writeNewTrack);
-        $('#editTrackForm').on('click', 'button#cancelAdd', cancelAdd);
     });
 
 function populateTable() {
@@ -107,7 +101,61 @@ function paginate(){
     $('#page_navigation').on('click', 'a.page_link', skipToPage);
 }
 
-        function showTrack(event){
+var manageTracks = {
+    init: function(){
+        this.cachedDom();
+        this.bindEvents();
+        },
+  
+    bindEvents: function(){
+        $('#songList table tbody').on('click', 'td .infobutton', this.showTrack);
+        $('#songList table tbody').on('click', 'td .addtoplaylist', this.addToPlaylist);
+        $('#trackInfo p').on('click', 'a.editbutton', this.editTrack);
+        this.$editTrackForm.on('click', 'button#cancelAdd', this.cancelAdd.bind(this));
+        this.$editTrackForm.on('click', 'button#cancelEdit', this.cancelEdit.bind(this));        
+        },
+        
+    cancelEdit: function(event){
+            event.preventDefault();
+            this.$editTrackForm.empty();
+        },
+    cancelAdd: function(event){
+            event.preventDefault();
+            this.$editTrackForm.empty();
+        },  
+    
+    addToPlaylist: function(event){
+            event.preventDefault();
+            
+            var thisTrackId = $(this).attr('rel');
+            var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
+            var thisTrackObject = trackData[arrayPosition];
+
+            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + '<span id="removeFromPlaylist" class="fa fa-trash-o"></span></li>');
+            
+            if ( $('#playlist li').length === 1 ){
+                var firstTrack = $('.playlist-item');
+                audioPlayer.moveToNextSong(firstTrack);
+            } 
+        },
+  
+    editTrack: function(event){
+        event.preventDefault();
+
+        var thisTrackId = $(this).attr('rel');
+        var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
+        var thisTrackObject = trackData[arrayPosition];
+
+        var editFormString = '<form id="formEditSongFields" name="editSong">'+
+            '<input id="editSongTitle" type="text" name="songname" value="' + thisTrackObject.songtitle +'">' + 
+            '<input id="editArtist" type="text" name="artistname" value="' +thisTrackObject.artist +'">' +
+            '<input id="editUrl" type="text" name="songurl" value="' + thisTrackObject.url +'">' +
+            '<button id="submitEdit" type="button" data-id="'+thisTrackObject._id+'">save changes</button><button type="button" id="cancelEdit">cancel</button></form>';
+
+            manageTracks.$editTrackForm.html(editFormString);            
+        },
+  
+    showTrack: function(event){
             event.preventDefault();
             $('#playLists').empty();
             $('#songList').css('display', 'none');
@@ -123,40 +171,15 @@ function paginate(){
             $('#trackInfoUrl').html('<textarea class="urlttextarea">'+thisTrackObject.url+'</textarea>');
             $('#editTrack').html('<a href="#" class="editbutton" rel="'+ thisTrackObject._id + '">Edit Details</a>');
             $('#deleteTrackBtn').html('<a href="#" class="deletebutton" rel="'+thisTrackObject._id + '">Delete Track</a>');
-            $( '#editTrackForm' ).empty();
-        }    
-    
-        function editTrack(event){
-            event.preventDefault();
+            manageTracks.$editTrackForm.empty();
+        },    
+  
+  cachedDom: function(){
+    this.$editTrackForm = $('#editTrackForm');  
+  }
+};
+manageTracks.init();
 
-            var thisTrackId = $(this).attr('rel');
-            var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
-            var thisTrackObject = trackData[arrayPosition];
-            
-            // this time instead of fetching track details from our cached array, we will query the db 
-            // call /trackinfo/:id route on admin.js
-          //  $.getJSON("/play/trackinfo/"+thisTrackId, function(data){
-                // use jquery to replace #trackInfo div with a form
-
-                var editFormString = '<form id="formEditSongFields" name="editSong">'+
-                '<input id="editSongTitle" type="text" name="songname" value="' + thisTrackObject.songtitle +'">' + 
-                '<input id="editArtist" type="text" name="artistname" value="' +thisTrackObject.artist +'">' +
-                '<input id="editUrl" type="text" name="songurl" value="' + thisTrackObject.url +'">' +
-                '<button id="submitEdit" type="button" data-id="'+thisTrackObject._id+'">save changes</button><button type="button" id="cancelEdit">cancel</button></form>';
-
-                $('#editTrackForm').html(editFormString);            
-        //    });            
-        }
-        
-        function cancelEdit(event){
-            event.preventDefault();
-            $('#editTrackForm').empty();
-        }
-        function cancelAdd(event){
-            event.preventDefault();
-            $('#editTrackForm').empty();
-        }    
-        
         function displayUpdated(event){
             event.preventDefault();
             var editedTrackInfo = { 'songtitle': $('#editTrackForm input#editSongTitle').val(),
@@ -221,29 +244,13 @@ function paginate(){
 
                     populateTable();
                     $('#editTrackForm').empty();
+                    $('#infobox').css('display', 'block');
                 }
                     else if (response.msg === 'dupe'){alert("that url is already in the database")}
                     else if (response.msg === '0'){alert('you must be signed in for that')}
             });
         }
-        
-    function addToPlaylist(event){
-            event.preventDefault();
-            
-            // get id from link rel
-            var thisTrackId = $(this).attr('rel');
-            
-            var arrayPosition = trackData.map(function(arrayItem){return arrayItem._id;}).indexOf(thisTrackId);
-            var thisTrackObject = trackData[arrayPosition];
-
-            $('#playlist ul').append("<li data-url='"+thisTrackObject.url+"' class='playlist-item'>" + thisTrackObject.songtitle +", "+thisTrackObject.artist + '<span id="removeFromPlaylist" class="fa fa-trash-o"></span></li>');
-            
-            if ( $('#playlist li').length === 1 ){
-                var firstTrack = $('.playlist-item');
-                audioPlayer.moveToNextSong(firstTrack);
-            } 
-    }
-    
+  
         var audioPlayer = {
             
             init: function(){
@@ -434,7 +441,7 @@ function paginate(){
                 this.$playLists.empty();
                 this.$songList.css('display', 'none');
                 this.$trackInfo.css('display', 'block');
-                
+                $('#infobox').css('display', 'none');
                 $('#editTrackForm').empty();
                 var addTrackString = '<p>Add track details here</p><form id="addTrackForm" name="addsong">'+
                     '<input id="addSongTitle" type="text" name="songname" placeholder="song title">' + 

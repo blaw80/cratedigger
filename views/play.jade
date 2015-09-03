@@ -22,18 +22,19 @@ block content
                 button(id='addTrack' type='button') Add Track
                 #playLists
                 #trackInfo(style='display: none')
-                    h3 Track Info
-                    p                    
-                        strong Title:
-                        |  <span id='trackInfoName'></span>
-                        br
-                        strong Artist:
-                        |  <span id='trackInfoArtist'></span>
-                        br
-                        strong Url:
-                        |  <span id='trackInfoUrl'></span>
-                        br
-                        |  <span id='editTrack'></span><span id='deleteTrackBtn'></span>
+                    #infobox
+                        h3 Track Info
+                        p                    
+                            strong Title:
+                            |  <span id='trackInfoName'></span>
+                            br
+                            strong Artist:
+                            |  <span id='trackInfoArtist'></span>
+                            br
+                            strong Url:
+                            |  <span id='trackInfoUrl'></span>
+                            br
+                            |  <span id='editTrack'></span><span id='deleteTrackBtn'></span>
                     #editTrackForm
                 #songList
                    table
