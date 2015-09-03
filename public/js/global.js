@@ -10,10 +10,11 @@
     });
 
 function populateTable() {
+    var docFrag = document.createDocumentFragment();
+    var table = document.getElementById('tracksTableBody');
 
     $.getJSON( '/play/tracklist', function( data ) {
     trackData = data;
-    var table = document.getElementById('tracksTableBody');
     $(table).empty();
     $.each(data, function(){
         var trow = document.createElement('tr');
@@ -37,10 +38,9 @@ function populateTable() {
         var addTrackHtml = '<span class="addtoplaylist fa fa-plus-circle" rel="' + this._id + '"></span>';
         addTrack.innerHTML = addTrackHtml;
         trow.appendChild(addTrack);
-
-        table.appendChild(trow);
+        docFrag.appendChild(trow);
     });
-
+    table.appendChild(docFrag);
     paginate();
     });
 }
@@ -108,8 +108,8 @@ var manageTracks = {
         },
   
     bindEvents: function(){
-        $('#songList table tbody').on('click', 'td .infobutton', this.showTrack);
-        $('#songList table tbody').on('click', 'td .addtoplaylist', this.addToPlaylist);
+        this.$songlistTable.on('click', 'td .infobutton', this.showTrack);
+        this.$songlistTable.on('click', 'td .addtoplaylist', this.addToPlaylist);
         $('#trackInfo p').on('click', 'a.editbutton', this.editTrack);
         this.$editTrackForm.on('click', 'button#cancelAdd', this.cancelAdd.bind(this));
         this.$editTrackForm.on('click', 'button#cancelEdit', this.cancelEdit.bind(this));        
@@ -174,8 +174,9 @@ var manageTracks = {
             manageTracks.$editTrackForm.empty();
         },    
   
-  cachedDom: function(){
-    this.$editTrackForm = $('#editTrackForm');  
+    cachedDom: function(){
+        this.$editTrackForm = $('#editTrackForm');
+        this.$songlistTable = $('#songList table tbody');
   }
 };
 manageTracks.init();
